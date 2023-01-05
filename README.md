@@ -1,0 +1,2 @@
+# node-mindustry
+headless
