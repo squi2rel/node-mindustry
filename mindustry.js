@@ -415,7 +415,7 @@ class TCPConnection{
         buf.limit(length+2);
         let obj=this.#serializer.read(buf);
         if(buf.position()-2!=length){
-            //console.error(`TCP无效${obj?obj.constructor.name:""}包:还剩${length+2-buf.position()}个字节未读`);
+            //console.error(`Broken TCP ${obj?obj.constructor.name+" ":""}packet!remaining ${length+2-buf.position()} bytes`);
             return null
         }
         return obj
@@ -482,7 +482,7 @@ class UDPConnection{
         let buf=ByteBuffer.from(d);
         let obj=this.#serializer.read(buf);
         if(buf.hasRemaining()){
-            //console.error(`UDP无效${obj?obj.constructor.name:""}包:还剩${buf.remaining()}个字节未读`);
+            //console.error(`Broken UDP ${obj?obj.constructor.name+" ":""}packet!remaining ${buf.remaining()} bytes`);
             return null
         }
         return obj
