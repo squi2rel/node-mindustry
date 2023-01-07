@@ -386,7 +386,7 @@ class TCPConnection{
             this.#tcp.ref();
             this.#connected=true
         } else {
-            console.error("TCP重复连接")
+            console.error("TCP already connected!")
         }
     }
     close(){
@@ -463,7 +463,7 @@ class UDPConnection{
                 this.send(new FrameworkMessage.KeepAlive())
             },19000)
         } else {
-            console.error("UDP重复连接")
+            console.error("UDP already connected!")
         }
     }
     close(){
@@ -476,7 +476,7 @@ class UDPConnection{
     }
     readObject(d){
         if(d.length>this.#maxLength){
-            console.error(`包过大(${d.length})`);
+            console.error(`Packet too large!(${d.length} bytes)`);
             return null
         }
         let buf=ByteBuffer.from(d);
@@ -616,7 +616,7 @@ class PacketSerializer{
                 }
                 return packet
             } else {
-                //console.error("未知的包id:"+id)
+                //console.error("Unknown packet id:"+id)
             }
             buf.clear();
         }
@@ -643,7 +643,7 @@ class PacketSerializer{
                 buf.position(buf.position()+size)
             }
         } else {
-            console.error("无效的数据类型:"+object.toString())
+            console.error("Invaild type:"+object.toString())
         }
     }
     writeLength(buf,len){
@@ -677,7 +677,7 @@ class PacketSerializer{
             p.connectionID=buf.getInt();
             return p
         } else {
-            throw new Error("未知的消息类型")
+            console.error("Unknown FrameworkMessage!")
         }
     }
 }
@@ -730,6 +730,7 @@ class NetClient{
             this.#lastSent=0
         });
         this.#client.on("timeout",()=>{
+            console.log("timeout!");
             this.reset()
         });
         this.#client.on("error",e=>{
@@ -737,10 +738,10 @@ class NetClient{
             console.error(e)
         });
         this.#client.on("connect",()=>{
-            console.log("连接成功")
+            console.log("connected!")
         });
         this.#client.on("disconnect",()=>{
-            console.log("断开连接");
+            console.log("disconnected!");
             this.reset()
         })
     }
