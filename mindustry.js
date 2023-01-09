@@ -363,7 +363,6 @@ class TCPConnection{
         this.#maxLength=r;
         this.#tcp=new net.Socket();
         this.#tcp.setNoDelay(true);
-        this.#tcp.setTimeout(12000);
         this.#connected=false;
         this.#tcp.on("connect",()=>{
             this.#timer=setInterval(()=>{
@@ -382,6 +381,7 @@ class TCPConnection{
     }
     connect(port,ip){
         if(!this.#connected){
+            this.#tcp.setTimeout(12000);
             this.#tcp.connect(port,ip);
             this.#tcp.ref();
             this.#connected=true
@@ -616,7 +616,7 @@ class PacketSerializer{
                 }
                 return packet
             } else {
-                //console.error("Unknown packet id:"+id)
+                console.error("Unknown packet id:"+id)
             }
             buf.clear();
         }
