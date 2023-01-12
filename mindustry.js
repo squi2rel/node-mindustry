@@ -4,9 +4,7 @@ const lz4=require("lz4");
 const crc32=require("crc-32");
 const {EventEmitter}=require("events");
 
-var rand=(min,max)=>{
-    return Math.floor(Math.random()*(max-min+1))+min
-}
+const debug=false;
 
 class ByteBuffer{
     #pos=0;
@@ -44,7 +42,7 @@ class ByteBuffer{
     limit(limit){
         if(limit!==undefined){
             this.#lim=limit;
-            this.#pos=Math.min(this.#pos,limit)
+            this.#pos=Math.min(this.#pos,limit);
             return this
         } else {
             return this.#lim
@@ -146,14 +144,17 @@ class ByteBuffer{
     }
 }
 
+var Packets=new Map();
+
 class Packet{
-    static priorityLow=0;
-    static priorityNormal=1;
-    static priorityHigh=2;
     read(){}
     write(){}
     handled(){}
-    getPriority(){return this.priorityNormal}
+    handleServer(){}
+    handleClient(){}
+    static newPacket(id){
+        return Packets.get(id)?new (Packets.get(id))():null
+    }
 }
 
 class TypeIO{
@@ -175,9 +176,82 @@ class TypeIO{
             return null
         }
     }
+    static writeKick(buf,reason){
+        buf.put(reason.id)
+    }
+    static readKick(buf){
+        return KickReason[buf.get()]
+    }
 }
 
-var Packets=new Map();
+class KickReason{
+    static kick=class extends KickReason{
+        static id=0
+    };
+    static clientOutdated=class extends KickReason{
+        static id=1
+    };
+    static serverOutdated=class extends KickReason{
+        static id=2
+    };
+    static banned=class extends KickReason{
+        static id=3
+    };
+    static gameover=class extends KickReason{
+        static id=4
+    };
+    static recentKick=class extends KickReason{
+        static id=5
+    };
+    static nameInUse=class extends KickReason{
+        static id=6
+    };
+    static idInUse=class extends KickReason{
+        static id=7
+    };
+    static nameEmpty=class extends KickReason{
+        static id=8
+    };
+    static customClient=class extends KickReason{
+        static id=9
+    };
+    static serverClose=class extends KickReason{
+        static id=10
+    };
+    static vote=class extends KickReason{
+        static id=11
+    };
+    static typeMismatch=class extends KickReason{
+        static id=12
+    };
+    static whitelist=class extends KickReason{
+        static id=13
+    };
+    static playerLimit=class extends KickReason{
+        static id=14
+    };
+    static serverRestarting=class extends KickReason{
+        static id=15
+    }
+}
+{
+    KickReason[0]=KickReason.kick;
+    KickReason[1]=KickReason.clientOutdated;
+    KickReason[2]=KickReason.serverOutdated;
+    KickReason[3]=KickReason.banned;
+    KickReason[4]=KickReason.gameover;
+    KickReason[5]=KickReason.recentKick;
+    KickReason[6]=KickReason.nameInUse;
+    KickReason[7]=KickReason.idInUse;
+    KickReason[8]=KickReason.nameEmpty;
+    KickReason[9]=KickReason.customClient;
+    KickReason[10]=KickReason.serverClose;
+    KickReason[11]=KickReason.vote;
+    KickReason[12]=KickReason.typeMismatch;
+    KickReason[13]=KickReason.whitelist;
+    KickReason[14]=KickReason.playerLimit;
+    KickReason[15]=KickReason.serverRestarting
+}
 
 class StreamBegin extends Packet{
     _id=0;
@@ -211,13 +285,12 @@ class StreamChunk extends Packet{
     }
     read(buf){
         this.id=buf.getInt();
-        console.log(buf.getShort())
         this.data=buf.get(buf.getShort()).toJSON().data
     }
 }
 Packets.set(1,StreamChunk);
 class WorldStream extends Packet{
-    //TODO
+    stream
 }
 Packets.set(2,WorldStream);
 class ConnectPacket extends Packet{
@@ -288,6 +361,7 @@ class DeconstructFinishCallPacket extends Packet{
         //TODO
     }
     read(buf){
+        //TODO
         buf.getInt();
         buf.getShort();
         buf.get();
@@ -295,6 +369,31 @@ class DeconstructFinishCallPacket extends Packet{
     }
 }
 Packets.set(29,DeconstructFinishCallPacket);
+class KickCallPacket extends Packet{
+    _id=43;
+    reason;
+    write(buf){
+        TypeIO.writeString(buf,this.reason)
+    }
+    read(buf){
+        this.reason=TypeIO.readString(buf)
+    }
+}
+Packets.set(43,KickCallPacket);
+class KickCallPacket2 extends Packet{
+    _id=44;
+    reason;
+    write(buf){
+        TypeIO.writeKick(buf,reason)
+    }
+    read(buf){
+        this.reason=TypeIO.readKick(buf)
+    }
+    handled(){
+        console.log(this.reason)
+    }
+}
+Packets.set(44,KickCallPacket2);
 class PingCallPacket extends Packet{
     _id=54;
     time;
@@ -328,7 +427,7 @@ class SendMessageCallPacket2 extends Packet{
         this.playersender=buf.getInt()
     }
     handled(packet){
-        console.log(packet.message)
+        console.log(this.message)
     }
 }
 Packets.set(71,SendMessageCallPacket2);
@@ -368,7 +467,7 @@ class TCPConnection{
             this.#timer=setInterval(()=>{
                 this.send(new FrameworkMessage.KeepAlive())
             },8000)
-        })
+        });
         this.#tcp.on("data",d=>{
             p(this.readObject(d))
         });
@@ -415,7 +514,9 @@ class TCPConnection{
         buf.limit(length+2);
         let obj=this.#serializer.read(buf);
         if(buf.position()-2!=length){
-            //console.error(`Broken TCP ${obj?obj.constructor.name+" ":""}packet!remaining ${length+2-buf.position()} bytes`);
+            if(debug){
+                console.error(`Broken TCP ${obj?obj.constructor.name+" ":""}packet!remaining ${length+2-buf.position()} bytes`)
+            }
             return null
         }
         return obj
@@ -482,7 +583,9 @@ class UDPConnection{
         let buf=ByteBuffer.from(d);
         let obj=this.#serializer.read(buf);
         if(buf.hasRemaining()){
-            //console.error(`Broken UDP ${obj?obj.constructor.name+" ":""}packet!remaining ${buf.remaining()} bytes`);
+            if(debug){
+                console.error(`Broken UDP ${obj?obj.constructor.name+" ":""}packet!remaining ${buf.remaining()} bytes`)
+            }
             return null
         }
         return obj
@@ -497,21 +600,14 @@ class UDPConnection{
     }
 }
 
-var FrameworkMessage={
-    RegisterTCP:class{
-        connectionID;
-        _fm=true;
-        constructor(){}
-    },
-    RegisterUDP:class{
-        connectionID;
-        _fm=true;
-        constructor(){}
-    },
-    KeepAlive:class{
-        _fm=true;
-        constructor(){}
+class FrameworkMessage{
+    static RegisterTCP=class extends FrameworkMessage{
+        connectionID
     }
+    static RegisterUDP=class extends FrameworkMessage{
+        connectionID
+    }
+    static KeepAlive=class extends FrameworkMessage{}
 }
 
 class Client{
@@ -520,7 +616,8 @@ class Client{
     #tcp;
     #udp;
     #event;
-    constructor(w,r,s){
+    #parser;
+    constructor(w,r,s,p){
         this.#tcp=new TCPConnection(w,r,s,data=>{this.parse(data)});
         this.#udp=new UDPConnection(w,r,s,data=>{this.parse(data)});
         this.#event=new EventEmitter();
@@ -532,7 +629,8 @@ class Client{
         });
         this.#tcp.on("close",()=>{
             this.#event.emit("disconnect")
-        })
+        });
+        this.#parser=p
     }
     on(name,func){
         this.#event.on(name,func)
@@ -577,9 +675,8 @@ class Client{
                     this.#event.emit("connect")
                 }
             }
-            if(!packet._fm){
-                packet.handled(packet);
-                this.#event.emit(packet.constructor.name,packet)
+            if(!(packet instanceof FrameworkMessage)){
+                this.#parser(packet)
             }
         }
     }
@@ -615,7 +712,7 @@ class PacketSerializer{
                     buf.position(buf.position()+this.#temp.position())
                 }
                 return packet
-            } else {
+            } else if(debug){
                 console.error("Unknown packet id:"+id)
             }
             buf.clear();
@@ -624,7 +721,7 @@ class PacketSerializer{
     write(buf,object){
         if(Buffer.isBuffer(object)||(object instanceof ByteBuffer)){
             buf.put(object)
-        } else if(object?._fm){
+        } else if(object instanceof FrameworkMessage){
             buf.put(-2);
             this.writeFramework(buf,object)
         } else if(object instanceof Packet){
@@ -682,6 +779,117 @@ class PacketSerializer{
     }
 }
 
+class StreamBuilder{
+    id;
+    type;
+    total;
+    stream;
+    constructor(packet){
+        this.id=packet.id;
+        this.type=packet.type;
+        this.total=packet.total;
+        this.stream=ByteBuffer.alloc(this.total)
+    }
+    add(data){
+        this.stream.put(data)
+    }
+    isDone(){
+        return this.stream.position()>=this.total
+    }
+    build(){
+        let s=Packet.newPacket(this.type);
+        s.stream=this.stream;
+        return s
+    }
+}
+
+class NetClient{
+    #client;
+    #event;
+    #streams;
+    constructor(){
+        this.#client=new Client(8192,32768,new PacketSerializer(),p=>{this.handleClientReceived(p)});
+        this.#event=new EventEmitter()
+        this.#client.on("timeout",()=>{
+            console.log("timeout!");
+            this.reset();
+            this.#event.emit("timeout")
+        });
+        this.#client.on("error",e=>{
+            this.reset();
+            console.error(e);
+            this.#event.emit("error")
+        });
+        this.#client.on("connect",()=>{
+            console.log("connected!");
+            this.#event.emit("connect")
+        });
+        this.#client.on("disconnect",()=>{
+            console.log("disconnected!");
+            this.reset();
+            this.#event.emit("disconnect")
+        });
+        this.#streams=new Map()
+    }
+    on(name,func){
+        this.#event.on(name,func)
+    }
+    once(name,func){
+        this.#event.once(name,func)
+    }
+    connect(port,ip){
+        this.#client.connect(port,ip)
+    }
+    send(packet,reliabale){
+        if(reliabale){
+            this.#client.sendTCP(packet)
+        } else {
+            this.#client.sendUDP(packet)
+        }
+    }
+    reset(){
+        this.#client.close()
+    }
+    join(name,uuid){
+        let p=new ConnectPacket();
+        p.name=name;
+        p.uuid=uuid;
+        p.usid="AAAAAAAAAAA=";
+        this.send(p,true)
+    }
+    sendChatMessage(msg){
+        let p=new SendChatMessageCallPacket();
+        p.message=msg;
+        this.send(p,true)
+    }
+    connectConfirm(){
+        this.send(new ConnectConfirmCallPacket(),true)
+    }
+    handleClientReceived(packet){
+        packet.handled();
+        if(packet instanceof StreamBegin){
+            this.#streams.set(packet.id,new StreamBuilder())
+        } else if(packet instanceof StreamChunk){
+            let builder=this.#streams.get(packet.id);
+            if(builder){
+                builder.add(packet.data);
+                if(builder.isDone()){
+                    this.#streams.delete(builder.id);
+                    this.handleClientReceived(builder.build())
+                }
+            } else {
+                console.error("Received stream chunk without a StreamBegin beforehand!")
+            }
+        } else {
+            if(this.#event.listenerCount(packet.constructor.name)!=0){
+                this.#event.emit(packet.constructor.name,packet)
+            } else {
+                packet.handleClient()
+            }
+        }
+    }
+}
+
 var pingHost=(ip,port,callback)=>{
     let client=dgram.createSocket("udp4",(msg,info)=>{
         client.disconnect();
@@ -719,74 +927,6 @@ var pingHost=(ip,port,callback)=>{
             callback(null,new Error("Timed out"))
         }
     },2000)
-}
-
-class NetClient{
-    #lastSent=0;
-    #client;
-    constructor(){
-        this.#client=new Client(8192,32768,new PacketSerializer());
-        this.#client.on("disconnect",()=>{
-            this.#lastSent=0
-        });
-        this.#client.on("timeout",()=>{
-            console.log("timeout!");
-            this.reset()
-        });
-        this.#client.on("error",e=>{
-            this.reset();
-            console.error(e)
-        });
-        this.#client.on("connect",()=>{
-            console.log("connected!")
-        });
-        this.#client.on("disconnect",()=>{
-            console.log("disconnected!");
-            this.reset()
-        })
-    }
-    on(name,func){
-        this.#client.on(name,func)
-    }
-    once(name,func){
-        this.#client.once(name,func)
-    }
-    connect(port,ip){
-        this.#client.connect(port,ip)
-    }
-    send(packet,reliabale){
-        if(reliabale){
-            this.#client.sendTCP(packet)
-        } else {
-            this.#client.sendUDP(packet)
-        }
-    }
-    reset(){
-        this.#client.close()
-    }
-    sync(){
-        let p=new ClientSnapshotCallPacket();
-        p.snapshotID=this.#lastSent++;
-        this.send(p,false)
-    }
-    newPacket(id){
-        return Packets.get(id)?new (Packets.get(id))():null
-    }
-    join(name,uuid){
-        let p=new ConnectPacket();
-        p.name=name;
-        p.uuid=uuid;
-        p.usid="AAAAAAAAAAA=";
-        this.send(p,true)
-    }
-    sendChatMessage(msg){
-        let p=new SendChatMessageCallPacket();
-        p.message=msg;
-        this.send(p,true)
-    }
-    connectConfirm(){
-        this.send(new ConnectConfirmCallPacket(),true)
-    }
 }
 
 module.exports={
