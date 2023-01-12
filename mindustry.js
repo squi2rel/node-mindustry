@@ -788,7 +788,7 @@ class StreamBuilder{
         this.id=packet.id;
         this.type=packet.type;
         this.total=packet.total;
-        this.stream=ByteBuffer.alloc(this.total)
+        this.stream=ByteBuffer.allocate(this.total)
     }
     add(data){
         this.stream.put(data)
