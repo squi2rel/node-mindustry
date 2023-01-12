@@ -868,7 +868,7 @@ class NetClient{
     handleClientReceived(packet){
         packet.handled();
         if(packet instanceof StreamBegin){
-            this.#streams.set(packet.id,new StreamBuilder())
+            this.#streams.set(packet.id,new StreamBuilder(packet));
         } else if(packet instanceof StreamChunk){
             let builder=this.#streams.get(packet.id);
             if(builder){
