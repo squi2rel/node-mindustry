@@ -426,7 +426,7 @@ class SendMessageCallPacket2 extends Packet{
         this.unformatted=TypeIO.readString(buf);
         this.playersender=buf.getInt()
     }
-    handled(packet){
+    handled(){
         console.log(this.message)
     }
 }
@@ -809,7 +809,7 @@ class NetClient{
     #streams;
     constructor(){
         this.#client=new Client(8192,32768,new PacketSerializer(),p=>{this.handleClientReceived(p)});
-        this.#event=new EventEmitter()
+        this.#event=new EventEmitter();
         this.#client.on("timeout",()=>{
             console.log("timeout!");
             this.reset();
