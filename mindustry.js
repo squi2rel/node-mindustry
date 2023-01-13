@@ -299,7 +299,7 @@ class ConnectPacket extends Packet{
     usid;
     uuid;
     write(buf){
-        buf.putInt(140);
+        buf.putInt(141);
         TypeIO.writeString(buf,"official");
         TypeIO.writeString(buf,this.name);
         TypeIO.writeString(buf,"zh_CN");
