@@ -497,7 +497,7 @@ class TCPConnection{
     }
     readObject(d){
         if(d.length>this.#maxLength){
-            console.error(`包过大(${d.length})`);
+            console.error(`Packet too large!(${d.length})`);
             return null
         }
         let buf=ByteBuffer.from(d);
