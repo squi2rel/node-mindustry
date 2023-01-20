@@ -3,6 +3,7 @@ const net=require("net");
 const lz4=require("lz4");
 const crc32=require("crc-32");
 const {EventEmitter}=require("events");
+const zlib=require("zlib");
 
 const debug=false;
 
@@ -142,11 +143,22 @@ class ByteBuffer{
         this.#pos=o+4;
         return this.#buf.readFloatBE(o)
     }
+    getDouble(){
+        let o=this.#pos?this.#pos:0;
+        this.#pos=o+8;
+        return this.#buf.readDoubleBE(o)
+    }
+    getLong(){
+        let o=this.#pos?this.#pos:0;
+        this.#pos=o+8;
+        let value=this.#buf.readInt32BE(o)<<32;
+        return value|this.#buf.readInt32BE(o+4)
+    }
 }
 
 class DataStream extends ByteBuffer{
     readString(){
-        return this.get(this.getShort()).toString()
+        return this.get(this.get(2).readUInt16BE()).toString()
     }
     writeString(buf){
         if(Buffer.isBuffer(buf)){
@@ -176,7 +188,8 @@ class TypeIO{
         if(string){
             buf.put(1);
             let strbuf=Buffer.from(string);
-            buf.putShort(strbuf.length);
+            buf.put(strbuf.length>>8);
+            buf.put(strbuf.length&0xff);
             buf.put(strbuf)
         } else {
             buf.put(0)
@@ -304,7 +317,10 @@ class StreamChunk extends Packet{
 }
 Packets.set(1,StreamChunk);
 class WorldStream extends Packet{
-    stream
+    stream;
+    handled(){
+        global.a=this
+    }
 }
 Packets.set(2,WorldStream);
 class ConnectPacket extends Packet{
@@ -530,49 +546,55 @@ class TCPConnection{
         }
     }
     readObject(d){
-        if(d){
-            if(this.#objectLength==0){
-                this.#objectLength=d.readInt16BE(0)
-            }
-            if((this.#readBuffer=Buffer.concat([this.#readBuffer,d])).length<this.#objectLength){
-                return null
-            }
-        } else {
-            if(this.#objectLength==0&&this.#readBuffer.length>=2){
-                this.#objectLength=this.#readBuffer.readInt16BE(0)
-            }
-            if(this.#readBuffer.length<this.#objectLength){
-                return null
-            }
-        }
-        if(this.#objectLength!=0){
-            let buf=ByteBuffer.from(this.#readBuffer).position(2);
-            let length=this.#objectLength;
-            this.#readBuffer=this.#readBuffer.slice(length+2);
-            this.#objectLength=0;
-            if(buf.remaining()>this.#maxLength){
-                console.error(`Packet too large!(${buf.capacity()} bytes)`);
-                return null
-            }
-            if(length<0){
-                return null
-            }
-            if(buf.remaining()<length){
-                buf.position(buf.capacity());
-                return null
-            }
-            buf.limit(length+2);
-            let obj=this.#serializer.read(buf);
-            if(buf.position()-2<length){
-                if(debug){
-                    console.error(`Broken TCP ${obj?obj.constructor.name+" ":""}packet!remaining ${length+2-buf.position()} bytes`)
+        try{
+            if(d){
+                if(this.#objectLength==0){
+                    this.#objectLength=d.readInt16BE(0)
                 }
-                buf.position(length+2);
-                buf.limit(buf.capacity());
+                if((this.#readBuffer=Buffer.concat([this.#readBuffer,d])).length<this.#objectLength){
+                    return null
+                }
+            } else {
+                if(this.#objectLength==0&&this.#readBuffer.length>=2){
+                    this.#objectLength=this.#readBuffer.readInt16BE(0)
+                }
+                if(this.#readBuffer.length<this.#objectLength){
+                    return null
+                }
+            }
+            if(this.#objectLength!=0){
+                let buf=ByteBuffer.from(this.#readBuffer).position(2);
+                let length=this.#objectLength;
+                this.#readBuffer=this.#readBuffer.slice(length+2);
+                this.#objectLength=0;
+                if(buf.remaining()>this.#maxLength){
+                    console.error(`Packet too large!(${buf.capacity()} bytes)`);
+                    return null
+                }
+                if(length<0){
+                    return null
+                }
+                if(buf.remaining()<length){
+                    buf.position(buf.capacity());
+                    return null
+                }
+                buf.limit(length+2);
+                let obj=this.#serializer.read(buf);
+                if(buf.position()-2<length){
+                    if(debug){
+                        console.error(`Broken TCP ${obj?obj.constructor.name+" ":""}packet!remaining ${length+2-buf.position()} bytes`)
+                    }
+                    buf.position(length+2);
+                    buf.limit(buf.capacity());
+                    return null
+                }
+                return obj
+            } else {
                 return null
             }
-            return obj
-        } else {
+        }catch(e){
+            this.#objectLength=0;
+            this.#readBuffer=Buffer.alloc(0);
             return null
         }
     }
@@ -843,7 +865,7 @@ class StreamBuilder{
         this.id=packet.id;
         this.type=packet.type;
         this.total=packet.total;
-        this.stream=DataStream.allocate(this.total)
+        this.stream=ByteBuffer.allocate(this.total)
     }
     add(data){
         this.stream.put(data)
@@ -930,6 +952,7 @@ class NetClient{
                 if(builder){
                     builder.add(packet.data);
                     if(builder.isDone()){
+                        console.log(`Received world data: ${builder.total} bytes.`);
                         this.#streams.delete(builder.id);
                         this.handleClientReceived(builder.build())
                     }
