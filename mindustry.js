@@ -144,6 +144,20 @@ class ByteBuffer{
     }
 }
 
+class DataStream extends ByteBuffer{
+    readString(){
+        return this.get(this.getShort()).toString()
+    }
+    writeString(buf){
+        if(Buffer.isBuffer(buf)){
+            this.putShort(buf.length);
+            this.put(buf)
+        } else {
+            this.writeBuffer(Buffer.from(buf))
+        }
+    }
+}
+
 var Packets=new Map();
 
 class Packet{
@@ -302,7 +316,7 @@ class ConnectPacket extends Packet{
         buf.putInt(141);
         TypeIO.writeString(buf,"official");
         TypeIO.writeString(buf,this.name);
-        TypeIO.writeString(buf,"zh_CN");
+        TypeIO.writeString(buf,"Mars");
         TypeIO.writeString(buf,this.usid);
         let uuidbuf=Buffer.from(this.uuid,"base64").toJSON().data;
         buf.put(uuidbuf);
@@ -448,18 +462,32 @@ class TransferItemToCallPacket extends Packet{
     }
 }
 Packets.set(98,TransferItemToCallPacket);
+class UnitControlCallPacket extends Packet{
+    _id=104;
+    player;
+    unit;
+    write(buf){
+        //TODO
+    }
+    read(buf){
+        //TODO
+    }
+}
+Packets.set(104,UnitControlCallPacket);
 
 class TCPConnection{
     #maxLength;
+    #readBuffer;
     #writeBuffer;
     #serializer;
     #tcp;
     #connected;
     #timer;
+    #objectLength;
     constructor(w,r,s,p){
         this.#writeBuffer=ByteBuffer.allocate(w);
         this.#serializer=s;
-        this.#maxLength=r;
+        this.#readBuffer=Buffer.alloc(0);
         this.#tcp=new net.Socket();
         this.#tcp.setNoDelay(true);
         this.#connected=false;
@@ -469,11 +497,17 @@ class TCPConnection{
             },8000)
         });
         this.#tcp.on("data",d=>{
-            p(this.readObject(d))
+            let res=this.readObject(d);
+            p(res);
+            while(res){
+                res=this.readObject();
+                p(res)
+            }
         });
         this.#tcp.on("close",()=>{
             clearInterval(this.#timer)
-        })
+        });
+        this.#objectLength=0
     }
     on(name,func){
         this.#tcp.on(name,func)
@@ -496,30 +530,51 @@ class TCPConnection{
         }
     }
     readObject(d){
-        if(d.length>this.#maxLength){
-            console.error(`Packet too large!(${d.length})`);
-            return null
-        }
-        let buf=ByteBuffer.from(d);
-        if(buf.length<2){
-            return null
-        }
-        let length=buf.getShort();
-        if(length<0){
-            return null
-        }
-        if(buf.remaining()<length){
-            return null
-        }
-        buf.limit(length+2);
-        let obj=this.#serializer.read(buf);
-        if(buf.position()-2!=length){
-            if(debug){
-                console.error(`Broken TCP ${obj?obj.constructor.name+" ":""}packet!remaining ${length+2-buf.position()} bytes`)
+        if(d){
+            if(this.#objectLength==0){
+                this.#objectLength=d.readInt16BE(0)
             }
+            if((this.#readBuffer=Buffer.concat([this.#readBuffer,d])).length<this.#objectLength){
+                return null
+            }
+        } else {
+            if(this.#objectLength==0&&this.#readBuffer.length>=2){
+                this.#objectLength=this.#readBuffer.readInt16BE(0)
+            }
+            if(this.#readBuffer.length<this.#objectLength){
+                return null
+            }
+        }
+        if(this.#objectLength!=0){
+            let buf=ByteBuffer.from(this.#readBuffer).position(2);
+            let length=this.#objectLength;
+            this.#readBuffer=this.#readBuffer.slice(length+2);
+            this.#objectLength=0;
+            if(buf.remaining()>this.#maxLength){
+                console.error(`Packet too large!(${buf.capacity()} bytes)`);
+                return null
+            }
+            if(length<0){
+                return null
+            }
+            if(buf.remaining()<length){
+                buf.position(buf.capacity());
+                return null
+            }
+            buf.limit(length+2);
+            let obj=this.#serializer.read(buf);
+            if(buf.position()-2<length){
+                if(debug){
+                    console.error(`Broken TCP ${obj?obj.constructor.name+" ":""}packet!remaining ${length+2-buf.position()} bytes`)
+                }
+                buf.position(length+2);
+                buf.limit(buf.capacity());
+                return null
+            }
+            return obj
+        } else {
             return null
         }
-        return obj
     }
     send(object){
         this.#writeBuffer.clear();
@@ -788,7 +843,7 @@ class StreamBuilder{
         this.id=packet.id;
         this.type=packet.type;
         this.total=packet.total;
-        this.stream=ByteBuffer.allocate(this.total)
+        this.stream=DataStream.allocate(this.total)
     }
     add(data){
         this.stream.put(data)
@@ -798,7 +853,7 @@ class StreamBuilder{
     }
     build(){
         let s=Packet.newPacket(this.type);
-        s.stream=this.stream;
+        s.stream=this.stream.position(0);
         return s
     }
 }
@@ -817,7 +872,7 @@ class NetClient{
         });
         this.#client.on("error",e=>{
             this.reset();
-            console.error(e);
+            console.error(e.stack);
             this.#event.emit("error")
         });
         this.#client.on("connect",()=>{
@@ -866,26 +921,32 @@ class NetClient{
         this.send(new ConnectConfirmCallPacket(),true)
     }
     handleClientReceived(packet){
-        packet.handled();
-        if(packet instanceof StreamBegin){
-            this.#streams.set(packet.id,new StreamBuilder(packet));
-        } else if(packet instanceof StreamChunk){
-            let builder=this.#streams.get(packet.id);
-            if(builder){
-                builder.add(packet.data);
-                if(builder.isDone()){
-                    this.#streams.delete(builder.id);
-                    this.handleClientReceived(builder.build())
+        try{
+            packet.handled();
+            if(packet instanceof StreamBegin){
+                this.#streams.set(packet.id,new StreamBuilder(packet));
+            } else if(packet instanceof StreamChunk){
+                let builder=this.#streams.get(packet.id);
+                if(builder){
+                    builder.add(packet.data);
+                    if(builder.isDone()){
+                        this.#streams.delete(builder.id);
+                        this.handleClientReceived(builder.build())
+                    }
+                } else {
+                    console.error("Received stream chunk without a StreamBegin beforehand!")
                 }
             } else {
-                console.error("Received stream chunk without a StreamBegin beforehand!")
+                if(this.#event.listenerCount(packet.constructor.name)!=0){
+                    this.#event.emit(packet.constructor.name,packet)
+                } else {
+                    packet.handleClient()
+                }
             }
-        } else {
-            if(this.#event.listenerCount(packet.constructor.name)!=0){
-                this.#event.emit(packet.constructor.name,packet)
-            } else {
-                packet.handleClient()
-            }
+        }catch(e){
+            this.reset();
+            console.error(e.stack);
+            this.#event.emit("error")
         }
     }
 }
@@ -928,6 +989,19 @@ var pingHost=(ip,port,callback)=>{
         }
     },2000)
 }
+/*
+class Tile
+
+class Tiles{
+    width;
+    height;
+    array;
+    constructor(width,height){
+        this.width=width;
+        this.height=height;
+        this.array=new Array(width*height)
+    }
+}*/
 
 module.exports={
     pingHost:pingHost,
