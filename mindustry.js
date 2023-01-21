@@ -317,10 +317,7 @@ class StreamChunk extends Packet{
 }
 Packets.set(1,StreamChunk);
 class WorldStream extends Packet{
-    stream;
-    handled(){
-        global.a=this
-    }
+    stream
 }
 Packets.set(2,WorldStream);
 class ConnectPacket extends Packet{
@@ -503,7 +500,6 @@ class TCPConnection{
     constructor(w,r,s,p){
         this.#writeBuffer=ByteBuffer.allocate(w);
         this.#serializer=s;
-        this.#readBuffer=Buffer.alloc(0);
         this.#tcp=new net.Socket();
         this.#tcp.setNoDelay(true);
         this.#connected=false;
@@ -522,14 +518,15 @@ class TCPConnection{
         });
         this.#tcp.on("close",()=>{
             clearInterval(this.#timer)
-        });
-        this.#objectLength=0
+        })
     }
     on(name,func){
         this.#tcp.on(name,func)
     }
     connect(port,ip){
         if(!this.#connected){
+            this.#readBuffer=Buffer.alloc(0);
+            this.#objectLength=0;
             this.#tcp.setTimeout(12000);
             this.#tcp.connect(port,ip);
             this.#tcp.ref();
