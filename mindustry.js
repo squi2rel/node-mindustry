@@ -317,7 +317,10 @@ class StreamChunk extends Packet{
 }
 Packets.set(1,StreamChunk);
 class WorldStream extends Packet{
-    stream
+    stream;
+    handled(){
+        global.a=this
+    }
 }
 Packets.set(2,WorldStream);
 class ConnectPacket extends Packet{
@@ -762,34 +765,39 @@ class PacketSerializer{
         this.#temp=ByteBuffer.allocate(32768)
     }
     read(buf){
-        let id=buf.get();
-        if(id==254){
-            return this.readFramework(buf)
-        } else {
-            if(Packets.get(id)){
-                let packet=new (Packets.get(id))();
-                let length=buf.getShort();
-                let compressed=buf.get();
-                this.#temp.clear();
-                if(compressed){
-                    let size=buf.remaining();
-                    lz4.decodeBlock(buf._getBuffer(buf.position()),this.#temp._getBuffer());
-                    this.#temp.position(0);
-                    this.#temp.limit(length);
-                    packet.read(this.#temp,length);
-                    buf.position(buf.position()+size)
-                } else {
-                    this.#temp.position(0).limit(length);
-                    this.#temp.put(buf._getBuffer(buf.position()));
-                    this.#temp.position(0);
-                    packet.read(this.#temp,length);
-                    buf.position(buf.position()+this.#temp.position())
+        try{
+            let id=buf.get();
+            if(id==254){
+                return this.readFramework(buf)
+            } else {
+                if(Packets.get(id)){
+                    let packet=new (Packets.get(id))();
+                    let length=buf.getShort();
+                    let compressed=buf.get();
+                    this.#temp.clear();
+                    if(compressed){
+                        let size=buf.remaining();
+                        lz4.decodeBlock(buf._getBuffer(buf.position()),this.#temp._getBuffer());
+                        this.#temp.position(0);
+                        this.#temp.limit(length);
+                        packet.read(this.#temp,length);
+                        buf.position(buf.position()+size)
+                    } else {
+                        this.#temp.position(0).limit(length);
+                        this.#temp.put(buf._getBuffer(buf.position()));
+                        this.#temp.position(0);
+                        packet.read(this.#temp,length);
+                        buf.position(buf.position()+this.#temp.position())
+                    }
+                    return packet
+                } else if(debug){
+                    console.error("Unknown packet id:"+id)
                 }
-                return packet
-            } else if(debug){
-                console.error("Unknown packet id:"+id)
+                buf.clear();
             }
-            buf.clear();
+        }catch(e){
+            console.log(buf);
+            console.error(e.stack)
         }
     }
     write(buf,object){
@@ -877,6 +885,17 @@ class StreamBuilder{
     }
 }
 
+class NetworkIO{
+    static readStringMap(buf){
+        let map=new Map();
+        let size=buf.getShort();
+        for(let i=0;i<size;i++){
+            map.set(buf.readString(),buf.readString())
+        }
+        return map
+    }
+}
+
 class NetClient{
     #client;
     #event;
@@ -948,6 +967,7 @@ class NetClient{
                 let builder=this.#streams.get(packet.id);
                 if(builder){
                     builder.add(packet.data);
+                    console.log(builder.stream.position()+"/"+builder.total+" "+Math.floor(builder.stream.position()/builder.total*100)+"%");
                     if(builder.isDone()){
                         console.log(`Received world data: ${builder.total} bytes.`);
                         this.#streams.delete(builder.id);
@@ -968,6 +988,9 @@ class NetClient{
             console.error(e.stack);
             this.#event.emit("error")
         }
+    }
+    loadWorld(packet){
+        let buf=zlib.inflateSync(raw._getBuffer())
     }
 }
 
