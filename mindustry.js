@@ -312,7 +312,7 @@ class StreamChunk extends Packet{
     }
     read(buf){
         this.id=buf.getInt();
-        this.data=buf.get(buf.getShort()).toJSON().data
+        this.data=buf.get(buf.getShort())
     }
 }
 Packets.set(1,StreamChunk);
@@ -358,6 +358,16 @@ class BeginBreakCallPacket extends Packet{
     }
 }
 Packets.set(9,BeginBreakCallPacket);
+class BeginPlaceCallPacket extends Packet{
+    _id=10;
+    write(buf){
+        //TODO
+    }
+    read(buf){
+        //TODO
+    }
+}
+Packets.set(10,BeginPlaceCallPacket);
 class ClientSnapshotCallPacket extends Packet{
     _id=19;
     snapshotID;
@@ -492,7 +502,6 @@ class UnitControlCallPacket extends Packet{
 Packets.set(104,UnitControlCallPacket);
 
 class TCPConnection{
-    #maxLength;
     #readBuffer;
     #writeBuffer;
     #serializer;
@@ -500,7 +509,7 @@ class TCPConnection{
     #connected;
     #timer;
     #objectLength;
-    constructor(w,r,s,p){
+    constructor(w,s,p){
         this.#writeBuffer=ByteBuffer.allocate(w);
         this.#serializer=s;
         this.#tcp=new net.Socket();
@@ -513,9 +522,11 @@ class TCPConnection{
         });
         this.#tcp.on("data",d=>{
             let res=this.readObject(d);
+            if(res){console.log(res.constructor.name)}
             p(res);
             while(res){
                 res=this.readObject();
+                if(res){console.log(res.constructor.name)}
                 p(res)
             }
         });
@@ -548,51 +559,35 @@ class TCPConnection{
     readObject(d){
         try{
             if(d){
-                if(this.#objectLength==0){
-                    this.#objectLength=d.readInt16BE(0)
-                }
-                if((this.#readBuffer=Buffer.concat([this.#readBuffer,d])).length<this.#objectLength){
-                    return null
-                }
-            } else {
-                if(this.#objectLength==0&&this.#readBuffer.length>=2){
-                    this.#objectLength=this.#readBuffer.readInt16BE(0)
-                }
-                if(this.#readBuffer.length<this.#objectLength){
-                    return null
-                }
+                this.#readBuffer=Buffer.concat([this.#readBuffer,d])
             }
-            if(this.#objectLength!=0){
-                let buf=ByteBuffer.from(this.#readBuffer).position(2);
-                let length=this.#objectLength;
-                this.#readBuffer=this.#readBuffer.slice(length+2);
-                this.#objectLength=0;
-                if(buf.remaining()>this.#maxLength){
-                    console.error(`Packet too large!(${buf.capacity()} bytes)`);
+            let readBuffer=this.#readBuffer;
+            if(this.#objectLength==0){
+                if(readBuffer.length<2){
                     return null
                 }
-                if(length<0){
-                    return null
-                }
-                if(buf.remaining()<length){
-                    buf.position(buf.capacity());
-                    return null
-                }
-                buf.limit(length+2);
-                let obj=this.#serializer.read(buf);
-                if(buf.position()-2<length){
-                    if(debug){
-                        console.error(`Broken TCP ${obj?obj.constructor.name+" ":""}packet!remaining ${length+2-buf.position()} bytes`)
-                    }
-                    buf.position(length+2);
-                    buf.limit(buf.capacity());
-                    return null
-                }
-                return obj
-            } else {
+                this.#objectLength=readBuffer.readInt16BE()
+            }
+            let length=this.#objectLength;
+            if(length<=0){
+                throw new Error("Invalid object length: "+length)
+            }
+            if(readBuffer.length<length){
                 return null
             }
+            let buf=ByteBuffer.from(readBuffer).position(2);
+            let object=this.#serializer.read(buf);
+            if(buf.position()-2!=length){
+                this.#objectLength=0;
+                this.#readBuffer=Buffer.alloc(0);
+                if(debug){
+                    console.error(`Broken TCP ${object?object.constructor.name+" ":""}packet!remaining ${length+2-buf.position()} bytes`)
+                }
+            }
+            this.#readBuffer=readBuffer.slice(buf.position());
+            return object
         }catch(e){
+            console.error(e.stack);
             this.#objectLength=0;
             this.#readBuffer=Buffer.alloc(0);
             return null
@@ -613,15 +608,13 @@ class TCPConnection{
 }
 
 class UDPConnection{
-    #maxLength;
     #writeBuffer;
     #serializer;
     #udp;
     #connected;
     #timer;
-    constructor(w,r,s,p){
+    constructor(w,s,p){
         this.#writeBuffer=ByteBuffer.allocate(w);
-        this.#maxLength=r;
         this.#serializer=s;
         this.#connected=false;
         this.#udp=dgram.createSocket("udp4",d=>{
@@ -653,10 +646,6 @@ class UDPConnection{
         }
     }
     readObject(d){
-        if(d.length>this.#maxLength){
-            console.error(`Packet too large!(${d.length} bytes)`);
-            return null
-        }
         let buf=ByteBuffer.from(d);
         let obj=this.#serializer.read(buf);
         if(buf.hasRemaining()){
@@ -694,9 +683,9 @@ class Client{
     #udp;
     #event;
     #parser;
-    constructor(w,r,s,p){
-        this.#tcp=new TCPConnection(w,r,s,data=>{this.parse(data)});
-        this.#udp=new UDPConnection(w,r,s,data=>{this.parse(data)});
+    constructor(w,s,p){
+        this.#tcp=new TCPConnection(w,s,data=>{this.parse(data)});
+        this.#udp=new UDPConnection(w,s,data=>{this.parse(data)});
         this.#event=new EventEmitter();
         this.#tcp.on("timeout",()=>{
             this.#event.emit("timeout")
@@ -795,8 +784,7 @@ class PacketSerializer{
                 }
                 buf.clear();
             }
-        }catch(e){
-            console.log(buf);
+        }catch(e){ 
             console.error(e.stack)
         }
     }
@@ -901,7 +889,7 @@ class NetClient{
     #event;
     #streams;
     constructor(){
-        this.#client=new Client(8192,32768,new PacketSerializer(),p=>{this.handleClientReceived(p)});
+        this.#client=new Client(8192,new PacketSerializer(),p=>{this.handleClientReceived(p)});
         this.#event=new EventEmitter();
         this.#client.on("timeout",()=>{
             console.log("timeout!");
