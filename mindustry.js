@@ -932,11 +932,11 @@ class NetClient{
     reset(){
         this.#client.close()
     }
-    join(name,uuid){
+    join(name,uuid,usid){
         let p=new ConnectPacket();
         p.name=name;
-        p.uuid=uuid;
-        p.usid="AAAAAAAAAAA=";
+        p.uuid=uuid?uuid:"AAAAAAAAAAA=";
+        p.usid=usid?usid:"AAAAAAAAAAA=";
         this.send(p,true)
     }
     sendChatMessage(msg){
