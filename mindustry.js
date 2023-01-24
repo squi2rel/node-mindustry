@@ -522,11 +522,9 @@ class TCPConnection{
         });
         this.#tcp.on("data",d=>{
             let res=this.readObject(d);
-            if(res){console.log(res.constructor.name)}
             p(res);
             while(res){
                 res=this.readObject();
-                if(res){console.log(res.constructor.name)}
                 p(res)
             }
         });
@@ -576,14 +574,17 @@ class TCPConnection{
                 return null
             }
             let buf=ByteBuffer.from(readBuffer).position(2);
+            buf.limit(length+2);
             let object=this.#serializer.read(buf);
             if(buf.position()-2!=length){
-                this.#objectLength=0;
-                this.#readBuffer=Buffer.alloc(0);
                 if(debug){
                     console.error(`Broken TCP ${object?object.constructor.name+" ":""}packet!remaining ${length+2-buf.position()} bytes`)
                 }
+                this.#objectLength=0;
+                this.#readBuffer=Buffer.alloc(0);
+                return null
             }
+            this.#objectLength=0;
             this.#readBuffer=readBuffer.slice(buf.position());
             return object
         }catch(e){
