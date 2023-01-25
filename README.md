@@ -19,7 +19,7 @@
 
 ## get server info
 ```javascript
-  require("mindustry").pingHost(10404,"n2.akiracloud.net",(data,err)=>{//ip,port,callback
+  require("mindustry").pingHost(10404,"n2.akiracloud.net",(data,err)=>{//port,ip,callback
     if(err){
       console.error(err.stack)
     } else {

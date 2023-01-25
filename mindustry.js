@@ -318,9 +318,7 @@ class StreamChunk extends Packet{
 Packets.set(1,StreamChunk);
 class WorldStream extends Packet{
     stream;
-    handled(){
-        global.a=this
-    }
+    //TODO
 }
 Packets.set(2,WorldStream);
 class ConnectPacket extends Packet{
@@ -465,9 +463,6 @@ class SendMessageCallPacket2 extends Packet{
         this.message=TypeIO.readString(buf);
         this.unformatted=TypeIO.readString(buf);
         this.playersender=buf.getInt()
-    }
-    handled(){
-        console.log(this.message)
     }
 }
 Packets.set(71,SendMessageCallPacket2);
@@ -859,17 +854,17 @@ class StreamBuilder{
         this.id=packet.id;
         this.type=packet.type;
         this.total=packet.total;
-        this.stream=ByteBuffer.allocate(this.total)
+        this.stream=Buffer.alloc(0)
     }
     add(data){
-        this.stream.put(data)
+        this.stream=Buffer.concat([this.stream,data])
     }
     isDone(){
-        return this.stream.position()>=this.total
+        return this.stream.length>=this.total
     }
     build(){
         let s=Packet.newPacket(this.type);
-        s.stream=this.stream.position(0);
+        s.stream=this.stream;
         return s
     }
 }
@@ -956,7 +951,7 @@ class NetClient{
                 let builder=this.#streams.get(packet.id);
                 if(builder){
                     builder.add(packet.data);
-                    console.log(builder.stream.position()+"/"+builder.total+" "+Math.floor(builder.stream.position()/builder.total*100)+"%");
+                    console.log(builder.stream.length+"/"+builder.total+" "+Math.floor(builder.stream.length/builder.total*100)+"%");
                     if(builder.isDone()){
                         console.log(`Received world data: ${builder.total} bytes.`);
                         this.#streams.delete(builder.id);
@@ -983,7 +978,7 @@ class NetClient{
     }
 }
 
-var pingHost=(ip,port,callback)=>{
+var pingHost=(port,ip,callback)=>{
     let client=dgram.createSocket("udp4",(msg,info)=>{
         client.disconnect();
         client.unref();
@@ -1021,19 +1016,6 @@ var pingHost=(ip,port,callback)=>{
         }
     },2000)
 }
-/*
-class Tile
-
-class Tiles{
-    width;
-    height;
-    array;
-    constructor(width,height){
-        this.width=width;
-        this.height=height;
-        this.array=new Array(width*height)
-    }
-}*/
 
 module.exports={
     pingHost:pingHost,
