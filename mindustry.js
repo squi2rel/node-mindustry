@@ -461,7 +461,7 @@ class SendMessageCallPacket extends Packet{
         this.message=TypeIO.readString(buf)
     }
 }
-Packets.set(70,SendMessageCallPacket2);
+Packets.set(70,SendMessageCallPacket);
 class SendMessageCallPacket2 extends Packet{
     _id=71;
     message;
