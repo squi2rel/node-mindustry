@@ -451,6 +451,17 @@ class SendChatMessageCallPacket extends Packet{
     }
 }
 Packets.set(69,SendChatMessageCallPacket);
+class SendMessageCallPacket extends Packet{
+    _id=70;
+    message;
+    write(buf){
+        //TODO
+    }
+    read(buf){
+        this.message=TypeIO.readString(buf)
+    }
+}
+Packets.set(70,SendMessageCallPacket2);
 class SendMessageCallPacket2 extends Packet{
     _id=71;
     message;
@@ -504,6 +515,7 @@ class TCPConnection{
     #connected;
     #timer;
     #objectLength;
+    #reading;
     constructor(w,s,p){
         this.#writeBuffer=ByteBuffer.allocate(w);
         this.#serializer=s;
