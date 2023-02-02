@@ -178,9 +178,6 @@ class Packet{
     handled(){}
     handleServer(){}
     handleClient(){}
-    static newPacket(id){
-        return Packets.get(id)?new (Packets.get(id))():null
-    }
 }
 
 class TypeIO{
@@ -920,7 +917,7 @@ class StreamBuilder{
         return this.stream.length>=this.total
     }
     build(){
-        let s=Packet.newPacket(this.type);
+        let s=Packets.get(this.type);
         s.stream=this.stream;
         return s
     }
@@ -1076,5 +1073,6 @@ var pingHost=(port,ip,callback)=>{
 
 module.exports={
     pingHost:pingHost,
-    NetClient:NetClient
+    NetClient:NetClient,
+    Packets:Packets
 }
