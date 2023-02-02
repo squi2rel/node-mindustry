@@ -209,6 +209,20 @@ class TypeIO{
     static readKick(buf){
         return KickReason[buf.get()]
     }
+    static readStrings(buf){
+        let rows=buf._getBuffer(buf.position()).readUInt8();
+        buf.position(buf.position()+1);
+        let strings=[];
+        for(let i=0;i<rows;i++){
+            strings[i]=[];
+            let columns=buf._getBuffer(buf.position()).readUInt8();
+            buf.position(buf.position()+1);
+            for(let j=0;j<columns;j++){
+                strings[i][j]=this.readString(buf)
+            }
+        }
+        return strings
+    }
 }
 
 class KickReason{
@@ -432,6 +446,37 @@ class KickCallPacket2 extends Packet{
     }
 }
 Packets.set(44,KickCallPacket2);
+class MenuCallPacket extends Packet{
+    _id=48;
+    menuId;
+    title;
+    message;
+    options;
+    write(buf){
+        //TODO
+    }
+    read(buf){
+        this.menuId=buf.getInt();
+        this.title=TypeIO.readString(buf);
+        this.message=TypeIO.readString(buf);
+        this.options=TypeIO.readStrings(buf)
+    }
+}
+Packets.set(48,MenuCallPacket);
+class MenuChooseCallPacket extends Packet{
+    _id=49;
+    player;
+    menuId;
+    option;
+    write(buf){
+        buf.putInt(this.menuId);
+        buf.putInt(this.option)
+    }
+    read(buf){
+        //TODO
+    }
+}
+Packets.set(49,MenuChooseCallPacket);
 class PingCallPacket extends Packet{
     _id=54;
     time;
