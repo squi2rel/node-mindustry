@@ -1023,6 +1023,7 @@ class NetClient{
                 }
             }
         }catch(e){
+            console.log(packet)
             this.reset();
             console.error(e.stack);
             this.#event.emit("error",e)
