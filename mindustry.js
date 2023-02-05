@@ -195,7 +195,7 @@ class TypeIO{
     static readString(buf){
         let str=buf.get();
         if(str){
-            return buf.get(buf.getShort()).toString()
+            return buf.get(buf.get(2).readUInt16BE()).toString()
         } else {
             return null
         }
@@ -209,6 +209,7 @@ class TypeIO{
     static readStrings(buf){
         let rows=buf._getBuffer(buf.position()).readUInt8();
         buf.position(buf.position()+1);
+        global.a=buf._getBuffer()
         let strings=[];
         for(let i=0;i<rows;i++){
             strings[i]=[];
@@ -917,7 +918,7 @@ class StreamBuilder{
         return this.stream.length>=this.total
     }
     build(){
-        let s=Packets.get(this.type);
+        let s=new (Packets.get(this.type))();
         s.stream=this.stream;
         return s
     }
@@ -949,7 +950,7 @@ class NetClient{
         this.#client.on("error",e=>{
             this.reset();
             console.error(e.stack);
-            this.#event.emit("error")
+            this.#event.emit("error",e)
         });
         this.#client.on("connect",()=>{
             console.log("connected!");
@@ -1024,11 +1025,11 @@ class NetClient{
         }catch(e){
             this.reset();
             console.error(e.stack);
-            this.#event.emit("error")
+            this.#event.emit("error",e)
         }
     }
     loadWorld(packet){
-        let buf=zlib.inflateSync(raw._getBuffer())
+        let buf=zlib.inflateSync(raw._getBuffer())//TODO
     }
 }
 
