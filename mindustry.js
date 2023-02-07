@@ -7,7 +7,7 @@ const zlib=require("zlib");
 
 const debug=false;
 
-class ByteBuffer{
+class DataStream{
     #pos=0;
     #buf;
     #lim;
@@ -36,9 +36,7 @@ class ByteBuffer{
         return bytes?this.#buf.slice(o,bytes+o):this.#buf.slice(o,o+1)[0]
     }
     getInt(){
-        let o=this.#pos;
-        this.#pos=o+4;
-        return this.#buf.slice(o,o+4).readInt32BE()
+        return this.get(4).readInt32BE()
     }
     limit(limit){
         if(limit!==undefined){
@@ -53,9 +51,10 @@ class ByteBuffer{
         return this.#lim-this.#pos
     }
     getShort(){
-        let o=this.#pos?this.#pos:0;
-        this.#pos=o+2;
-        return this.#buf.readInt16BE(o)
+        return this.get(2).readInt16BE()
+    }
+    getUShort(){
+        return this.get(2).readUInt16BE()
     }
     position(pos){
         if(pos!==undefined){
@@ -70,26 +69,18 @@ class ByteBuffer{
         this.#pos=0;
         return this
     }
-    compact(){
-        this.#buf.copy(this.#buf,0,this.#pos,this.#lim);
-        this.#pos=this.#lim-this.#pos;
-        this.#lim=this.#buf.length;
-        return this
-    }
     put(data){
         if(Buffer.isBuffer(data)){
             let writeBytes=Math.min(this.remaining(),data.length);
             data.copy(this.#buf,this.#pos,0,writeBytes);
             this.#pos+=writeBytes;
-            return this
+            return writeBytes
         } else if(typeof(data)=="string"){
             return this.put(Buffer.from(data))
         } else if(data instanceof Array){
             return this.put(Buffer.from(data))
-        } else if(data instanceof ByteBuffer){
-            data.flip();
-            this.put(data._getBuffer());
-            data.clear();
+        } else if(data instanceof DataStream){
+            data.position(data.position()+this.put(data._getBuffer(data.position())))
             return this
         } else {
             this.#buf[this.#pos]=data;
@@ -108,6 +99,11 @@ class ByteBuffer{
         this.#pos+=2;
         return this
     }
+    putUShort(data){
+        this.#buf.writeUInt16BE(data,this.#pos);
+        this.#pos+=2;
+        return this
+    }
     array(){
         return this.#buf.toJSON().data
     }
@@ -122,7 +118,7 @@ class ByteBuffer{
         return this.#buf.readInt32BE(o)
     }
     toString(){
-        return `ByteBuffer[pos=${this.#pos},lim=${this.#lim},cap=${this.#buf.length}]`
+        return `DataStream[pos=${this.#pos},lim=${this.#lim},cap=${this.#buf.length}]`
     }
     _getBuffer(offset){
         return this.#buf.slice(offset===undefined?0:offset,this.#lim)
@@ -154,18 +150,15 @@ class ByteBuffer{
         let value=this.#buf.readInt32BE(o)<<32;
         return value|this.#buf.readInt32BE(o+4)
     }
-}
-
-class DataStream extends ByteBuffer{
     readString(){
-        return this.get(this.get(2).readUInt16BE()).toString()
+        return this.get(this.getUShort()).toString()
     }
     writeString(buf){
         if(Buffer.isBuffer(buf)){
-            this.putShort(buf.length);
+            this.putUShort(buf.length);
             this.put(buf)
         } else {
-            this.writeBuffer(Buffer.from(buf))
+            this.writeString(Buffer.from(buf))
         }
     }
 }
@@ -195,7 +188,7 @@ class TypeIO{
     static readString(buf){
         let str=buf.get();
         if(str){
-            return buf.get(buf.get(2).readUInt16BE()).toString()
+            return buf.get(buf.getUShort()).toString()
         } else {
             return null
         }
@@ -558,9 +551,8 @@ class TCPConnection{
     #connected;
     #timer;
     #objectLength;
-    #reading;
     constructor(w,s,p){
-        this.#writeBuffer=ByteBuffer.allocate(w);
+        this.#writeBuffer=DataStream.allocate(w);
         this.#serializer=s;
         this.#tcp=new net.Socket();
         this.#tcp.setNoDelay(true);
@@ -623,7 +615,7 @@ class TCPConnection{
             if(readBuffer.length<length){
                 return null
             }
-            let buf=ByteBuffer.from(readBuffer).position(2);
+            let buf=DataStream.from(readBuffer).position(2);
             buf.limit(length+2);
             let object=this.#serializer.read(buf);
             if(buf.position()-2!=length){
@@ -665,7 +657,7 @@ class UDPConnection{
     #connected;
     #timer;
     constructor(w,s,p){
-        this.#writeBuffer=ByteBuffer.allocate(w);
+        this.#writeBuffer=DataStream.allocate(w);
         this.#serializer=s;
         this.#connected=false;
         this.#udp=dgram.createSocket("udp4",d=>{
@@ -697,7 +689,7 @@ class UDPConnection{
         }
     }
     readObject(d){
-        let buf=ByteBuffer.from(d);
+        let buf=DataStream.from(d);
         let obj=this.#serializer.read(buf);
         if(buf.hasRemaining()){
             if(debug){
@@ -802,7 +794,7 @@ class Client{
 class PacketSerializer{
     #temp;
     constructor(){
-        this.#temp=ByteBuffer.allocate(32768)
+        this.#temp=DataStream.allocate(32768)
     }
     read(buf){
         try{
@@ -840,7 +832,7 @@ class PacketSerializer{
         }
     }
     write(buf,object){
-        if(Buffer.isBuffer(object)||(object instanceof ByteBuffer)){
+        if(Buffer.isBuffer(object)||(object instanceof DataStream)){
             buf.put(object)
         } else if(object instanceof FrameworkMessage){
             buf.put(-2);
@@ -851,12 +843,12 @@ class PacketSerializer{
             object.write(this.#temp);
             let length=this.#temp.position();
             buf.putShort(length);
+            this.#temp.flip();
             if(length<36||object instanceof StreamChunk){
                 buf.put(0);
                 buf.put(this.#temp)
             } else {
                 buf.put(1);
-                this.#temp.flip();
                 let size=lz4.encodeBlock(this.#temp._getBuffer(),buf._getBuffer(buf.position()));
                 buf.position(buf.position()+size)
             }
@@ -1040,7 +1032,7 @@ var pingHost=(port,ip,callback)=>{
         let readString=buf=>{
             return buf.get(buf.get()).toString()
         }
-        let bbuf=ByteBuffer.from(msg);
+        let bbuf=DataStream.from(msg);
         callback({
             name:readString(bbuf),
             map:readString(bbuf),
