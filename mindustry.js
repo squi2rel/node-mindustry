@@ -202,7 +202,7 @@ class TypeIO{
     static readStrings(buf){
         let rows=buf._getBuffer(buf.position()).readUInt8();
         buf.position(buf.position()+1);
-        global.a=buf._getBuffer()
+
         let strings=[];
         for(let i=0;i<rows;i++){
             strings[i]=[];
