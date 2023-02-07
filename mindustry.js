@@ -322,8 +322,7 @@ class StreamChunk extends Packet{
 }
 Packets.set(1,StreamChunk);
 class WorldStream extends Packet{
-    stream;
-    //TODO
+    stream
 }
 Packets.set(2,WorldStream);
 class ConnectPacket extends Packet{
@@ -481,9 +480,6 @@ class SendChatMessageCallPacket extends Packet{
     message;
     write(buf){
         TypeIO.writeString(buf,this.message)
-    }
-    read(){
-        //TODO
     }
 }
 Packets.set(69,SendChatMessageCallPacket);
@@ -1021,7 +1017,7 @@ class NetClient{
         }
     }
     loadWorld(packet){
-        let buf=zlib.inflateSync(raw._getBuffer())//TODO
+        let buf=zlib.inflateSync(raw._getBuffer())//TODO coming s∞n...
     }
 }
 
@@ -1064,8 +1060,15 @@ var pingHost=(port,ip,callback)=>{
     },2000)
 }
 
+class Mindustry{
+    constructor(){
+        
+    }
+}
+
 module.exports={
     pingHost:pingHost,
     NetClient:NetClient,
-    Packets:Packets
+    Packets:Packets,
+    Mindustry:Mindustry
 }
