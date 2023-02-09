@@ -322,7 +322,10 @@ class StreamChunk extends Packet{
 }
 Packets.set(1,StreamChunk);
 class WorldStream extends Packet{
-    stream
+    stream;
+    handleClient(nc){
+        nc.loadWorld(this)
+    }
 }
 Packets.set(2,WorldStream);
 class ConnectPacket extends Packet{
@@ -913,6 +916,10 @@ class StreamBuilder{
 }
 
 class NetworkIO{
+    
+}
+
+class SaveIO{
     static readStringMap(buf){
         let map=new Map();
         let size=buf.getShort();
@@ -927,7 +934,8 @@ class NetClient{
     #client;
     #event;
     #streams;
-    constructor(){
+    game;
+    constructor(game){
         this.#client=new Client(8192,new PacketSerializer(),p=>{this.handleClientReceived(p)});
         this.#event=new EventEmitter();
         this.#client.on("timeout",()=>{
@@ -949,6 +957,7 @@ class NetClient{
             this.reset();
             this.#event.emit("disconnect")
         });
+        this.game=game;
         this.#streams=new Map()
     }
     on(name,func){
@@ -987,7 +996,7 @@ class NetClient{
     }
     handleClientReceived(packet){
         try{
-            packet.handled();
+            packet.handled(this);
             if(packet instanceof StreamBegin){
                 this.#streams.set(packet.id,new StreamBuilder(packet));
             } else if(packet instanceof StreamChunk){
@@ -1007,7 +1016,7 @@ class NetClient{
                 if(this.#event.listenerCount(packet.constructor.name)!=0){
                     this.#event.emit(packet.constructor.name,packet)
                 } else {
-                    packet.handleClient()
+                    packet.handleClient(this)
                 }
             }
         }catch(e){
@@ -1016,8 +1025,16 @@ class NetClient{
             this.#event.emit("error",e)
         }
     }
-    loadWorld(packet){
-        let buf=zlib.inflateSync(raw._getBuffer())//TODO coming s∞n...
+    loadWorld(packet,game){
+        let buf=DataStream.from(zlib.inflateSync(packet.stream));
+        buf.readString();//TODO Rules
+        let map=SaveIO.readStringMap(buf);
+        let wave=buf.getInt();
+        let wavetime=buf.getFloat();
+        let tick=buf.getDouble();
+        let seed0=buf.getLong();
+        let seed1=buf.getLong();
+        let id=buf.getInt();
     }
 }
 
@@ -1061,8 +1078,10 @@ var pingHost=(port,ip,callback)=>{
 }
 
 class Mindustry{
-    constructor(){
-        
+    netClient;
+    constructor() {
+        this.netClient=new NetClient(this);
+        //TODO don't use
     }
 }
 
