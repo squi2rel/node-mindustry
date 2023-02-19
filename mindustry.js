@@ -199,7 +199,7 @@ class Tiles{
         this.array.length=w*h
     }
     set(x,y,tile){
-        this.array[y*this,width+x]=tile
+        this.array[y*this.width+x]=tile
     }
 }
 
@@ -1111,7 +1111,6 @@ class NetClient{
         let tick=buf.getDouble();
         let seed0=buf.getLong();
         let seed1=buf.getLong();
-        let id=buf.getInt();
 
         buf.getInt();//TODO Player
         buf.get();
