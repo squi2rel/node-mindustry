@@ -1113,6 +1113,7 @@ class NetClient{
         let seed1=buf.getLong();
 
         buf.getInt();//TODO Player
+        buf.getShort();
         buf.get();
         buf.get();
         buf.getInt();
