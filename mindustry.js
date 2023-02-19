@@ -249,10 +249,10 @@ class World{
             for(let y=0;y<height;y++){
                 let pos=y*width+x;
                 let color=colors[tiles.array[pos].floor];
-                temp.put((colors>>24)&0xff);
-                temp.put((colors>>16)&0xff);
-                temp.put((colors>>8)&0xff);
-                temp.put(colors&0xff)
+                temp.put((color>>24)&0xff);
+                temp.put((color>>16)&0xff);
+                temp.put((color>>8)&0xff);
+                temp.put(color&0xff)
             }
         }
         temp.flip();
