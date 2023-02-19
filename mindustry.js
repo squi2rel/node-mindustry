@@ -163,6 +163,62 @@ class DataStream{
     }
 }
 
+class Events{
+    static #emitter=new EventEmitter();
+    static on(name,func){
+        Events.#emitter.on(name,func)
+    }
+    static fire(name,arg){
+        Events.#emitter.emit(name,arg)
+    }
+}
+
+class Tile{
+    x;
+    y;
+    floor;
+    overlay;
+    block;
+    constructor(x,y,f,o,w){
+        this.x=x;
+        this.y=y;
+        this.floor=f;
+        this.overlay=o;
+        this.block=w
+    }
+}
+
+class Tiles{
+    width;
+    height;
+    array;
+    constructor(w,h){
+        this.width=w;
+        this.height=h;
+        this.array=[];
+        this.array.length=w*h
+    }
+    set(x,y,tile){
+        this.array[y*this,width+x]=tile
+    }
+}
+
+class World{
+    tiles;
+    constructor(){
+        this.tiles=new Tiles(0,0)
+    }
+    create(x,y,f,o,w){
+        this.tiles.set(x,y,new Tile(x,y,f,o,w))
+    }
+    resize(w,h){
+        if(this.tiles.width!=w||this.tiles.height!=h){
+            this.tiles=new Tiles(w,h)
+        }
+        return this.tiles
+    }
+}
+
 var Packets=new Map();
 
 class Packet{
@@ -324,7 +380,9 @@ Packets.set(1,StreamChunk);
 class WorldStream extends Packet{
     stream;
     handleClient(nc){
-        nc.loadWorld(this)
+        if(nc){
+            nc.loadWorld(this)
+        }
     }
 }
 Packets.set(2,WorldStream);
@@ -928,6 +986,25 @@ class SaveIO{
         }
         return map
     }
+    static readMap(buf,world){
+        let width=buf.getUShort();
+        let height=buf.getUShort();
+        world.resize(width,height);
+        let l=width*height;
+        for(let i=0;i<l;i++){
+            let x=i%width,y=Math.floor(i/width);
+            let floorid=buf.getShort();
+            let oreid=buf.getShort();
+            let consecutives=buf.get();
+            world.create(x,y,floorid,oreid,0);
+            let l=i+1+consecutives;
+            for(let j=i+1;j<l;j++){
+                let x=j%width,y=Math.floor(j/width);
+                world.create(x,y,floorid,oreid,0)
+            }
+            i+=consecutives
+        }
+    }
 }
 
 class NetClient{
@@ -1035,6 +1112,32 @@ class NetClient{
         let seed0=buf.getLong();
         let seed1=buf.getLong();
         let id=buf.getInt();
+
+        buf.getInt();//TODO Player
+        buf.get();
+        buf.get();
+        buf.getInt();
+        buf.getFloat();
+        buf.getFloat();
+        TypeIO.readString(buf);
+        buf.get();
+        buf.get();
+        buf.get();
+        buf.get();
+        buf.getInt();
+        buf.getFloat();
+        buf.getFloat();
+
+        let mapped=buf.get();//TODO readContentHeader
+        for(let i=0;i<mapped;i++){
+            buf.get();
+            let total=buf.getShort();
+            for(let j=0;j<total;j++){
+                buf.readString()
+            }
+        }
+
+        SaveIO.readMap(buf,this.game.world)
     }
 }
 
@@ -1081,6 +1184,7 @@ class Mindustry{
     netClient;
     constructor() {
         this.netClient=new NetClient(this);
+        this.world=new World();
         //TODO don't use
     }
 }
