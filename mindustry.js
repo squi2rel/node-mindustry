@@ -441,7 +441,7 @@ class ConnectPacket extends Packet{
     usid;
     uuid;
     write(buf){
-        buf.putInt(141);
+        buf.putInt(142);
         TypeIO.writeString(buf,"official");
         TypeIO.writeString(buf,this.name);
         TypeIO.writeString(buf,"Mars");
