@@ -244,8 +244,8 @@ class World{
         temp.put([8,6,0,0,0]);
         flush();
         temp.put("IDAT");
-        let pos=temp.position();
         for(let y=0;y<height;y++){
+            let pos=temp.position();
             for(let x=0;x<width;x++){
                 let pos=y*width+x;
                 let color=colors[tiles.array[pos].floor];
@@ -254,12 +254,12 @@ class World{
                 temp.put((color>>8)&0xff);
                 temp.put(color&0xff)
             }
+            temp.flip();
+            let zipped=zlib.deflateSync(temp._getBuffer(pos));
+            temp.limit(temp.capacity());
+            temp.position(pos);
+            temp.put(zipped)
         }
-        temp.flip();
-        let zipped=zlib.deflateSync(temp._getBuffer(pos));
-        temp.limit(temp.capacity());
-        temp.position(pos);
-        temp.put(zipped);
         flush();
         temp.put("IEND");
         flush();
