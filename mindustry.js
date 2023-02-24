@@ -246,6 +246,7 @@ class World{
         temp.put("IDAT");
         for(let y=0;y<height;y++){
             let pos=temp.position();
+            temp.put(0);
             for(let x=0;x<width;x++){
                 let pos=y*width+x;
                 let color=colors[tiles.array[pos].floor];
