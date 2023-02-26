@@ -245,7 +245,7 @@ class World{
         flush();
         temp.put("IDAT");
         let pos=temp.position();
-        for(let y=0;y<height;y++){
+        for(let y=height-1;y>=0;y--){
             temp.put(0);
             for(let x=0;x<width;x++){
                 let pos=y*width+x;
@@ -1203,7 +1203,7 @@ var pingHost=(port,ip,callback)=>{
         client.unref();
         let readString=buf=>{
             return buf.get(buf.get()).toString()
-        }
+        };
         let bbuf=DataStream.from(msg);
         callback({
             name:readString(bbuf),
