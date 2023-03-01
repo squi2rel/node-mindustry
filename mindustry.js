@@ -4,7 +4,6 @@ const lz4=require("lz4");
 const crc32=require("crc-32");
 const {EventEmitter}=require("events");
 const zlib=require("zlib");
-const { urlToHttpOptions } = require("url");
 
 const debug=false;
 
