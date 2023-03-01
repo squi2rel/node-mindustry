@@ -240,9 +240,14 @@ class World{
             temp.put(0);
             for(let x=0;x<width;x++){
                 let pos=y*width+x;
-                let colorPos=tiles.array[pos].overlay?tiles.array[pos].overlay:tiles.array[pos].floor;
-                if(colorPos>16){
-                    colorPos-=17
+                let colorPos=0;
+                if(tiles.array[pos].overlay){
+                    colorPos=tiles.array[pos].overlay
+                } else {
+                    colorPos=tiles.array[pos].floor;
+                    if(colorPos>16){
+                        colorPos-=17
+                    }
                 }
                 let color=colors[colorPos];
                 temp.put(color>>24&0xff);
