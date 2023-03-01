@@ -168,16 +168,6 @@ class DataStream{
     }
 }
 
-class Events{
-    static #emitter=new EventEmitter();
-    static on(name,func){
-        Events.#emitter.on(name,func)
-    }
-    static fire(name,arg){
-        Events.#emitter.emit(name,arg)
-    }
-}
-
 class Tile{
     x;
     y;
