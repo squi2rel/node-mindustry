@@ -4,6 +4,7 @@ const lz4=require("lz4");
 const crc32=require("crc-32");
 const {EventEmitter}=require("events");
 const zlib=require("zlib");
+const { urlToHttpOptions } = require("url");
 
 const debug=false;
 
@@ -434,7 +435,7 @@ Packets.set(1,StreamChunk);
 class WorldStream extends Packet{
     stream;
     handleClient(nc){
-        if(nc){
+        if(nc.game){
             nc.loadWorld(this)
         }
     }
@@ -1005,6 +1006,20 @@ class PacketSerializer{
     }
 }
 
+class Events{
+    #em;
+    constructor(){
+        this.#em=new EventEmitter();
+        this.#em.setMaxListeners(Infinity)
+    }
+    on(a,b){
+        this.#em.on(a,b)
+    }
+    fire(a,b){
+        this.#em.emit(a,b)
+    }
+}
+
 class StreamBuilder{
     id;
     type;
@@ -1158,7 +1173,7 @@ class NetClient{
             this.#event.emit("error",e)
         }
     }
-    loadWorld(packet,game){
+    loadWorld(packet){
         let buf=DataStream.from(zlib.inflateSync(packet.stream));
         buf.readString();//TODO Rules
         let map=SaveIO.readStringMap(buf);
@@ -1193,7 +1208,9 @@ class NetClient{
             }
         }
 
-        SaveIO.readMap(buf,this.game.world)
+        SaveIO.readMap(buf,this.game.world);
+
+        this.game.events.fire("WorldLoadEvent")
     }
 }
 
@@ -1238,10 +1255,12 @@ var pingHost=(port,ip,callback)=>{
 
 class Mindustry{
     netClient;
+    world;
+    events;
     constructor() {
         this.netClient=new NetClient(this);
         this.world=new World();
-        //TODO don't use
+        this.events=new Events()
     }
 }
 
