@@ -436,7 +436,7 @@ class ConnectPacket extends Packet{
     usid;
     uuid;
     write(buf){
-        buf.putInt(142);
+        buf.putInt(143);
         TypeIO.writeString(buf,"official");
         TypeIO.writeString(buf,this.name);
         TypeIO.writeString(buf,"Mars");
@@ -476,7 +476,7 @@ class BeginPlaceCallPacket extends Packet{
 }
 Packets.set(10,BeginPlaceCallPacket);
 class ClientSnapshotCallPacket extends Packet{
-    _id=19;
+    _id=18;
     snapshotID;
     write(buf){
         //TODO
@@ -497,13 +497,13 @@ class ClientSnapshotCallPacket extends Packet{
         buf.putFloat(1080)
     }
 }
-Packets.set(19,ClientSnapshotCallPacket);
+Packets.set(18,ClientSnapshotCallPacket);
 class ConnectConfirmCallPacket extends Packet{
-    _id=23
+    _id=22
 }
-Packets.set(23,ConnectConfirmCallPacket);
+Packets.set(22,ConnectConfirmCallPacket);
 class DeconstructFinishCallPacket extends Packet{
-    _id=29;
+    _id=28;
     write(buf){
         //TODO
     }
@@ -515,9 +515,9 @@ class DeconstructFinishCallPacket extends Packet{
         buf.getInt()
     }
 }
-Packets.set(29,DeconstructFinishCallPacket);
+Packets.set(28,DeconstructFinishCallPacket);
 class KickCallPacket extends Packet{
-    _id=43;
+    _id=44;
     reason;
     write(buf){
         TypeIO.writeString(buf,this.reason)
@@ -526,9 +526,9 @@ class KickCallPacket extends Packet{
         this.reason=TypeIO.readString(buf)
     }
 }
-Packets.set(43,KickCallPacket);
+Packets.set(44,KickCallPacket);
 class KickCallPacket2 extends Packet{
-    _id=44;
+    _id=45;
     reason;
     write(buf){
         TypeIO.writeKick(buf,reason)
@@ -540,9 +540,9 @@ class KickCallPacket2 extends Packet{
         console.log(this.reason)
     }
 }
-Packets.set(44,KickCallPacket2);
+Packets.set(45,KickCallPacket2);
 class MenuCallPacket extends Packet{
-    _id=48;
+    _id=49;
     menuId;
     title;
     message;
@@ -557,9 +557,9 @@ class MenuCallPacket extends Packet{
         this.options=TypeIO.readStrings(buf)
     }
 }
-Packets.set(48,MenuCallPacket);
+Packets.set(49,MenuCallPacket);
 class MenuChooseCallPacket extends Packet{
-    _id=49;
+    _id=50;
     player;
     menuId;
     option;
@@ -571,25 +571,25 @@ class MenuChooseCallPacket extends Packet{
         //TODO
     }
 }
-Packets.set(49,MenuChooseCallPacket);
+Packets.set(50,MenuChooseCallPacket);
 class PingCallPacket extends Packet{
-    _id=54;
+    _id=55;
     time;
     write(buf){
         buf.putLong(this.time)
     }
 }
-Packets.set(54,PingCallPacket);
+Packets.set(55,PingCallPacket);
 class SendChatMessageCallPacket extends Packet{
-    _id=69;
+    _id=70;
     message;
     write(buf){
         TypeIO.writeString(buf,this.message)
     }
 }
-Packets.set(69,SendChatMessageCallPacket);
+Packets.set(70,SendChatMessageCallPacket);
 class SendMessageCallPacket extends Packet{
-    _id=70;
+    _id=71;
     message;
     write(buf){
         //TODO
@@ -598,9 +598,9 @@ class SendMessageCallPacket extends Packet{
         this.message=TypeIO.readString(buf)
     }
 }
-Packets.set(70,SendMessageCallPacket);
+Packets.set(71,SendMessageCallPacket);
 class SendMessageCallPacket2 extends Packet{
-    _id=71;
+    _id=72;
     message;
     unformatted;
     playersender;
@@ -613,9 +613,9 @@ class SendMessageCallPacket2 extends Packet{
         this.playersender=buf.getInt()
     }
 }
-Packets.set(71,SendMessageCallPacket2);
+Packets.set(72,SendMessageCallPacket2);
 class TransferItemToCallPacket extends Packet{
-    _id=98;
+    _id=101;
     write(buf){
         //TODO
     }
@@ -630,9 +630,9 @@ class TransferItemToCallPacket extends Packet{
         buf.getInt()
     }
 }
-Packets.set(98,TransferItemToCallPacket);
+Packets.set(101,TransferItemToCallPacket);
 class UnitControlCallPacket extends Packet{
-    _id=104;
+    _id=107;
     player;
     unit;
     write(buf){
@@ -642,7 +642,7 @@ class UnitControlCallPacket extends Packet{
         //TODO
     }
 }
-Packets.set(104,UnitControlCallPacket);
+Packets.set(107,UnitControlCallPacket);
 
 class TCPConnection{
     #readBuffer;
@@ -1014,21 +1014,26 @@ class StreamBuilder{
     type;
     total;
     stream;
+    #length;
+    #buf;
     constructor(packet){
+        this.#length=0;
         this.id=packet.id;
         this.type=packet.type;
         this.total=packet.total;
-        this.stream=Buffer.alloc(0)
+        this.#buf=[]
     }
     add(data){
-        this.stream=Buffer.concat([this.stream,data])
+        if(!data instanceof Buffer) throw new TypeError("data must be a buffer.")
+        this.#length+=data.length;
+        this.#buf.push(data)
     }
     isDone(){
-        return this.stream.length>=this.total
+        return this.#length>=this.total
     }
     build(){
         let s=new (Packets.get(this.type))();
-        s.stream=this.stream;
+        s.stream=this.stream=Buffer.concat(this.#buf);
         return s
     }
 }
