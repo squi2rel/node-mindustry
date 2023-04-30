@@ -1145,7 +1145,7 @@ class NetClient{
                 let builder=this.#streams.get(packet.id);
                 if(builder){
                     builder.add(packet.data);
-                    console.log(builder.stream.length+"/"+builder.total+" "+Math.floor(builder.stream.length/builder.total*100)+"%");
+                    console.log(builder.length+"/"+builder.total+" "+Math.floor(builder.length/builder.total*100)+"%");
                     if(builder.isDone()){
                         console.log(`Received world data: ${builder.total} bytes.`);
                         this.#streams.delete(builder.id);
