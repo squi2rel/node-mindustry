@@ -1144,7 +1144,8 @@ class NetClient{
             } else if(packet instanceof StreamChunk){
                 let builder=this.#streams.get(packet.id);
                 if(builder){
-                    builder.add(packet.data);
+                    let buf=packet.data;
+                    builder.add(Buffer.from(buf.parent.slice(buf.offset,buf.offset+buf.length).slice(0)));//copy
                     console.log(builder.length+"/"+builder.total+" "+Math.floor(builder.length/builder.total*100)+"%");
                     if(builder.isDone()){
                         console.log(`Received world data: ${builder.total} bytes.`);
