@@ -7,6 +7,8 @@ const zlib=require("zlib");
 
 const debug=false;
 
+const mindustry={};
+
 class DataStream{
     #pos=0;
     #buf;
@@ -179,6 +181,13 @@ class Tile{
         this.floor=f;
         this.overlay=o;
         this.block=w
+    }
+    static buildDestroyed(build){
+        if(!build) return;
+        build.killed()
+    }
+    static buildHealthUpdate(){//TODO
+        
     }
 }
 
@@ -384,7 +393,8 @@ class KickReason{
 }
 
 //CODEGEN from squi2rel (github.com/squi2rel/Mindustry-CN-ARC);
-const Packets=new Map();
+var Packets=new Map();
+
 class StreamBegin extends Packet{
     _id=0;
     static #lastid=0;
@@ -463,6 +473,9 @@ class AdminRequestCallPacket extends Packet{
             this.other=TypeIO.readEntity(buf);
         this.action=TypeIO.readAction(buf)
     }
+    handleServer(n){
+            n.adminRequest(player, other, action)
+    }
 }
 Packets.set(4,AdminRequestCallPacket);
 class AnnounceCallPacket extends Packet{
@@ -473,6 +486,9 @@ class AnnounceCallPacket extends Packet{
     }
     read(buf){
             this.message=TypeIO.readString(buf)
+    }
+    handleClient(n){
+            
     }
 }
 Packets.set(5,AnnounceCallPacket);
@@ -488,6 +504,9 @@ class AssemblerDroneSpawnedCallPacket extends Packet{
             this.tile=TypeIO.readTile(buf);
         this.id=buf.getInt()
     }
+    handleClient(n){
+            mindustry.world.blocks.units.UnitAssembler.assemblerDroneSpawned(tile, id)
+    }
 }
 Packets.set(6,AssemblerDroneSpawnedCallPacket);
 class AssemblerUnitSpawnedCallPacket extends Packet{
@@ -498,6 +517,9 @@ class AssemblerUnitSpawnedCallPacket extends Packet{
     }
     read(buf){
             this.tile=TypeIO.readTile(buf)
+    }
+    handleClient(n){
+            mindustry.world.blocks.units.UnitAssembler.assemblerUnitSpawned(tile)
     }
 }
 Packets.set(7,AssemblerUnitSpawnedCallPacket);
@@ -512,6 +534,9 @@ class AutoDoorToggleCallPacket extends Packet{
     read(buf){
             this.tile=TypeIO.readTile(buf);
         this.open=buf.get()
+    }
+    handleClient(n){
+            mindustry.world.blocks.defense.AutoDoor.autoDoorToggle(tile, open)
     }
 }
 Packets.set(8,AutoDoorToggleCallPacket);
@@ -532,6 +557,9 @@ class BeginBreakCallPacket extends Packet{
         this.team=TypeIO.readTeam(buf);
         this.x=buf.getInt();
         this.y=buf.getInt()
+    }
+    handleClient(n){
+            mindustry.world.Build.beginBreak(unit, team, x, y)
     }
 }
 Packets.set(9,BeginBreakCallPacket);
@@ -559,6 +587,9 @@ class BeginPlaceCallPacket extends Packet{
         this.y=buf.getInt();
         this.rotation=buf.getInt()
     }
+    handleClient(n){
+            mindustry.world.Build.beginPlace(unit, result, team, x, y, rotation)
+    }
 }
 Packets.set(10,BeginPlaceCallPacket);
 class BlockSnapshotCallPacket extends Packet{
@@ -576,6 +607,9 @@ class BlockSnapshotCallPacket extends Packet{
             this.amount=buf.getShort();
         this.data=TypeIO.readBytes(buf)
     }
+    handleClient(n){
+            n.blockSnapshot(amount, data)
+    }
 }
 Packets.set(11,BlockSnapshotCallPacket);
 class BuildDestroyedCallPacket extends Packet{
@@ -587,6 +621,9 @@ class BuildDestroyedCallPacket extends Packet{
     read(buf){
             this.build=TypeIO.readBuilding(buf)
     }
+    handleClient(n){
+            Tile.buildDestroyed(build)
+    }
 }
 Packets.set(12,BuildDestroyedCallPacket);
 class BuildHealthUpdateCallPacket extends Packet{
@@ -597,6 +634,9 @@ class BuildHealthUpdateCallPacket extends Packet{
     }
     read(buf){
             this.buildings=TypeIO.readIntSeq(buf)
+    }
+    handleClient(n){
+            Tile.buildHealthUpdate(buildings)
     }
 }
 Packets.set(13,BuildHealthUpdateCallPacket);
@@ -612,6 +652,12 @@ class BuildingControlSelectCallPacket extends Packet{
             this.player=TypeIO.readEntity(buf);
         this.build=TypeIO.readBuilding(buf)
     }
+    handleServer(n){
+            InputHandler.buildingControlSelect(player, build)
+    }
+    handleClient(n){
+            InputHandler.buildingControlSelect(player, build)
+    }
 }
 Packets.set(14,BuildingControlSelectCallPacket);
 class ClearItemsCallPacket extends Packet{
@@ -622,6 +668,9 @@ class ClearItemsCallPacket extends Packet{
     }
     read(buf){
             this.build=TypeIO.readBuilding(buf)
+    }
+    handleClient(n){
+            InputHandler.clearItems(build)
     }
 }
 Packets.set(15,ClearItemsCallPacket);
@@ -637,6 +686,9 @@ class ClientPacketReliableCallPacket extends Packet{
             this.type=TypeIO.readString(buf);
         this.contents=TypeIO.readString(buf)
     }
+    handleClient(n){
+            n.clientPacketReliable(type, contents)
+    }
 }
 Packets.set(16,ClientPacketReliableCallPacket);
 class ClientPacketUnreliableCallPacket extends Packet{
@@ -650,6 +702,9 @@ class ClientPacketUnreliableCallPacket extends Packet{
     read(buf){
             this.type=TypeIO.readString(buf);
         this.contents=TypeIO.readString(buf)
+    }
+    handleClient(n){
+            n.clientPacketUnreliable(type, contents)
     }
 }
 Packets.set(17,ClientPacketUnreliableCallPacket);
@@ -722,6 +777,9 @@ class ClientSnapshotCallPacket extends Packet{
         this.viewWidth=buf.getFloat();
         this.viewHeight=buf.getFloat()
     }
+    handleServer(n){
+            n.clientSnapshot(player, snapshotID, unitID, dead, x, y, pointerX, pointerY, rotation, baseRotation, xVelocity, yVelocity, mining, boosting, shooting, chatting, building, plans, viewX, viewY, viewWidth, viewHeight)
+    }
 }
 Packets.set(18,ClientSnapshotCallPacket);
 class CommandBuildingCallPacket extends Packet{
@@ -738,6 +796,12 @@ class CommandBuildingCallPacket extends Packet{
             this.player=TypeIO.readEntity(buf);
         this.buildings=TypeIO.readInts(buf);
         this.target=TypeIO.readVec2(buf)
+    }
+    handleServer(n){
+            InputHandler.commandBuilding(player, buildings, target)
+    }
+    handleClient(n){
+            InputHandler.commandBuilding(player, buildings, target)
     }
 }
 Packets.set(19,CommandBuildingCallPacket);
@@ -762,6 +826,12 @@ class CommandUnitsCallPacket extends Packet{
         this.unitTarget=TypeIO.readUnit(buf);
         this.posTarget=TypeIO.readVec2(buf)
     }
+    handleServer(n){
+            InputHandler.commandUnits(player, unitIds, buildTarget, unitTarget, posTarget)
+    }
+    handleClient(n){
+            InputHandler.commandUnits(player, unitIds, buildTarget, unitTarget, posTarget)
+    }
 }
 Packets.set(20,CommandUnitsCallPacket);
 class ConnectCallPacket extends Packet{
@@ -776,6 +846,9 @@ class ConnectCallPacket extends Packet{
             this.ip=TypeIO.readString(buf);
         this.port=buf.getInt()
     }
+    handleClient(n){
+            n.connect(ip, port)
+    }
 }
 Packets.set(21,ConnectCallPacket);
 class ConnectConfirmCallPacket extends Packet{
@@ -785,6 +858,9 @@ class ConnectConfirmCallPacket extends Packet{
     }
     read(buf){
     
+    }
+    handleServer(n){
+            n.connectConfirm(player)
     }
 }
 Packets.set(22,ConnectConfirmCallPacket);
@@ -811,6 +887,9 @@ class ConstructFinishCallPacket extends Packet{
         this.rotation=buf.get();
         this.team=TypeIO.readTeam(buf);
         this.config=TypeIO.readObject(buf)
+    }
+    handleClient(n){
+            mindustry.world.blocks.ConstructBlock.constructFinish(tile, block, builder, rotation, team, config)
     }
 }
 Packets.set(23,ConstructFinishCallPacket);
@@ -844,6 +923,9 @@ class CreateBulletCallPacket extends Packet{
         this.velocityScl=buf.getFloat();
         this.lifetimeScl=buf.getFloat()
     }
+    handleClient(n){
+            mindustry.entities.bullet.BulletType.createBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl)
+    }
 }
 Packets.set(24,CreateBulletCallPacket);
 class CreateWeatherCallPacket extends Packet{
@@ -867,6 +949,9 @@ class CreateWeatherCallPacket extends Packet{
         this.windX=buf.getFloat();
         this.windY=buf.getFloat()
     }
+    handleClient(n){
+            mindustry.type.Weather.createWeather(weather, intensity, duration, windX, windY)
+    }
 }
 Packets.set(25,CreateWeatherCallPacket);
 class DebugStatusClientCallPacket extends Packet{
@@ -886,6 +971,9 @@ class DebugStatusClientCallPacket extends Packet{
             this.value=buf.getInt();
         this.lastClientSnapshot=buf.getInt();
         this.snapshotsSent=buf.getInt()
+    }
+    handleClient(n){
+            n.debugStatusClient(value, lastClientSnapshot, snapshotsSent)
     }
 }
 Packets.set(26,DebugStatusClientCallPacket);
@@ -907,6 +995,9 @@ class DebugStatusClientUnreliableCallPacket extends Packet{
         this.lastClientSnapshot=buf.getInt();
         this.snapshotsSent=buf.getInt()
     }
+    handleClient(n){
+            n.debugStatusClientUnreliable(value, lastClientSnapshot, snapshotsSent)
+    }
 }
 Packets.set(27,DebugStatusClientUnreliableCallPacket);
 class DeconstructFinishCallPacket extends Packet{
@@ -924,6 +1015,9 @@ class DeconstructFinishCallPacket extends Packet{
         this.block=TypeIO.readBlock(buf);
         this.builder=TypeIO.readUnit(buf)
     }
+    handleClient(n){
+            mindustry.world.blocks.ConstructBlock.deconstructFinish(tile, block, builder)
+    }
 }
 Packets.set(28,DeconstructFinishCallPacket);
 class DeletePlansCallPacket extends Packet{
@@ -938,6 +1032,12 @@ class DeletePlansCallPacket extends Packet{
             this.player=TypeIO.readEntity(buf);
         this.positions=TypeIO.readInts(buf)
     }
+    handleServer(n){
+            InputHandler.deletePlans(player, positions)
+    }
+    handleClient(n){
+            InputHandler.deletePlans(player, positions)
+    }
 }
 Packets.set(29,DeletePlansCallPacket);
 class DropItemCallPacket extends Packet{
@@ -948,6 +1048,9 @@ class DropItemCallPacket extends Packet{
     }
     read(buf){
             this.angle=buf.getFloat()
+    }
+    handleServer(n){
+            InputHandler.dropItem(player, angle)
     }
 }
 Packets.set(30,DropItemCallPacket);
@@ -971,6 +1074,9 @@ class EffectCallPacket extends Packet{
         this.y=buf.getFloat();
         this.rotation=buf.getFloat();
         this.color=TypeIO.readColor(buf)
+    }
+    handleClient(n){
+            n.effect(effect, x, y, rotation, color)
     }
 }
 Packets.set(31,EffectCallPacket);
@@ -998,6 +1104,9 @@ class EffectCallPacket2 extends Packet{
         this.color=TypeIO.readColor(buf);
         this.data=TypeIO.readObject(buf)
     }
+    handleClient(n){
+            n.effect(effect, x, y, rotation, color, data)
+    }
 }
 Packets.set(32,EffectCallPacket2);
 class EffectReliableCallPacket extends Packet{
@@ -1021,6 +1130,9 @@ class EffectReliableCallPacket extends Packet{
         this.rotation=buf.getFloat();
         this.color=TypeIO.readColor(buf)
     }
+    handleClient(n){
+            n.effectReliable(effect, x, y, rotation, color)
+    }
 }
 Packets.set(33,EffectReliableCallPacket);
 class EntitySnapshotCallPacket extends Packet{
@@ -1037,6 +1149,9 @@ class EntitySnapshotCallPacket extends Packet{
     read(buf){
             this.amount=buf.getShort();
         this.data=TypeIO.readBytes(buf)
+    }
+    handleClient(n){
+            n.entitySnapshot(amount, data)
     }
 }
 Packets.set(34,EntitySnapshotCallPacket);
@@ -1058,6 +1173,9 @@ class FollowUpMenuCallPacket extends Packet{
         this.message=TypeIO.readString(buf);
         this.options=TypeIO.readStrings(buf)
     }
+    handleClient(n){
+            
+    }
 }
 Packets.set(35,FollowUpMenuCallPacket);
 class GameOverCallPacket extends Packet{
@@ -1068,6 +1186,9 @@ class GameOverCallPacket extends Packet{
     }
     read(buf){
             this.winner=TypeIO.readTeam(buf)
+    }
+    handleClient(n){
+            mindustry.core.Logic.gameOver(winner)
     }
 }
 Packets.set(36,GameOverCallPacket);
@@ -1083,6 +1204,9 @@ class HiddenSnapshotCallPacket extends Packet{
     read(buf){
             this.ids=TypeIO.readIntSeq(buf)
     }
+    handleClient(n){
+            n.hiddenSnapshot(ids)
+    }
 }
 Packets.set(37,HiddenSnapshotCallPacket);
 class HideFollowUpMenuCallPacket extends Packet{
@@ -1094,6 +1218,9 @@ class HideFollowUpMenuCallPacket extends Packet{
     read(buf){
             this.menuId=buf.getInt()
     }
+    handleClient(n){
+            
+    }
 }
 Packets.set(38,HideFollowUpMenuCallPacket);
 class HideHudTextCallPacket extends Packet{
@@ -1103,6 +1230,9 @@ class HideHudTextCallPacket extends Packet{
     }
     read(buf){
     
+    }
+    handleClient(n){
+            
     }
 }
 Packets.set(39,HideHudTextCallPacket);
@@ -1114,6 +1244,9 @@ class InfoMessageCallPacket extends Packet{
     }
     read(buf){
             this.message=TypeIO.readString(buf)
+    }
+    handleClient(n){
+            
     }
 }
 Packets.set(40,InfoMessageCallPacket);
@@ -1144,6 +1277,9 @@ class InfoPopupCallPacket extends Packet{
         this.bottom=buf.getInt();
         this.right=buf.getInt()
     }
+    handleClient(n){
+            
+    }
 }
 Packets.set(41,InfoPopupCallPacket);
 class InfoPopupReliableCallPacket extends Packet{
@@ -1173,6 +1309,9 @@ class InfoPopupReliableCallPacket extends Packet{
         this.bottom=buf.getInt();
         this.right=buf.getInt()
     }
+    handleClient(n){
+            
+    }
 }
 Packets.set(42,InfoPopupReliableCallPacket);
 class InfoToastCallPacket extends Packet{
@@ -1186,6 +1325,9 @@ class InfoToastCallPacket extends Packet{
     read(buf){
             this.message=TypeIO.readString(buf);
         this.duration=buf.getFloat()
+    }
+    handleClient(n){
+            
     }
 }
 Packets.set(43,InfoToastCallPacket);
@@ -1201,6 +1343,9 @@ class KickCallPacket extends Packet{
     read(buf){
             this.reason=TypeIO.readString(buf)
     }
+    handleClient(n){
+            n.kick(reason)
+    }
 }
 Packets.set(44,KickCallPacket);
 class KickCallPacket2 extends Packet{
@@ -1214,6 +1359,9 @@ class KickCallPacket2 extends Packet{
     }
     read(buf){
             this.reason=TypeIO.readKick(buf)
+    }
+    handleClient(n){
+            n.kick(reason)
     }
 }
 Packets.set(45,KickCallPacket2);
@@ -1235,6 +1383,9 @@ class LabelCallPacket extends Packet{
         this.worldx=buf.getFloat();
         this.worldy=buf.getFloat()
     }
+    handleClient(n){
+            
+    }
 }
 Packets.set(46,LabelCallPacket);
 class LabelReliableCallPacket extends Packet{
@@ -1254,6 +1405,9 @@ class LabelReliableCallPacket extends Packet{
         this.duration=buf.getFloat();
         this.worldx=buf.getFloat();
         this.worldy=buf.getFloat()
+    }
+    handleClient(n){
+            
     }
 }
 Packets.set(47,LabelReliableCallPacket);
@@ -1287,6 +1441,9 @@ class LogicExplosionCallPacket extends Packet{
         this.ground=buf.get();
         this.pierce=buf.get()
     }
+    handleClient(n){
+            mindustry.logic.LExecutor.logicExplosion(team, x, y, radius, damage, air, ground, pierce)
+    }
 }
 Packets.set(48,LogicExplosionCallPacket);
 class MenuCallPacket extends Packet{
@@ -1307,6 +1464,9 @@ class MenuCallPacket extends Packet{
         this.message=TypeIO.readString(buf);
         this.options=TypeIO.readStrings(buf)
     }
+    handleClient(n){
+            
+    }
 }
 Packets.set(49,MenuCallPacket);
 class MenuChooseCallPacket extends Packet{
@@ -1324,6 +1484,12 @@ class MenuChooseCallPacket extends Packet{
         this.menuId=buf.getInt();
         this.option=buf.getInt()
     }
+    handleServer(n){
+            
+    }
+    handleClient(n){
+            
+    }
 }
 Packets.set(50,MenuChooseCallPacket);
 class OpenURICallPacket extends Packet{
@@ -1334,6 +1500,9 @@ class OpenURICallPacket extends Packet{
     }
     read(buf){
             this.uri=TypeIO.readString(buf)
+    }
+    handleClient(n){
+            
     }
 }
 Packets.set(51,OpenURICallPacket);
@@ -1352,6 +1521,9 @@ class PayloadDroppedCallPacket extends Packet{
         this.x=buf.getFloat();
         this.y=buf.getFloat()
     }
+    handleClient(n){
+            InputHandler.payloadDropped(unit, x, y)
+    }
 }
 Packets.set(52,PayloadDroppedCallPacket);
 class PickedBuildPayloadCallPacket extends Packet{
@@ -1369,6 +1541,9 @@ class PickedBuildPayloadCallPacket extends Packet{
         this.build=TypeIO.readBuilding(buf);
         this.onGround=buf.get()
     }
+    handleClient(n){
+            InputHandler.pickedBuildPayload(unit, build, onGround)
+    }
 }
 Packets.set(53,PickedBuildPayloadCallPacket);
 class PickedUnitPayloadCallPacket extends Packet{
@@ -1383,6 +1558,9 @@ class PickedUnitPayloadCallPacket extends Packet{
             this.unit=TypeIO.readUnit(buf);
         this.target=TypeIO.readUnit(buf)
     }
+    handleClient(n){
+            InputHandler.pickedUnitPayload(unit, target)
+    }
 }
 Packets.set(54,PickedUnitPayloadCallPacket);
 class PingCallPacket extends Packet{
@@ -1393,6 +1571,9 @@ class PingCallPacket extends Packet{
     }
     read(buf){
             this.time=buf.getLong()
+    }
+    handleServer(n){
+            n.ping(player, time)
     }
 }
 Packets.set(55,PingCallPacket);
@@ -1405,6 +1586,9 @@ class PingResponseCallPacket extends Packet{
     read(buf){
             this.time=buf.getLong()
     }
+    handleClient(n){
+            n.pingResponse(time)
+    }
 }
 Packets.set(56,PingResponseCallPacket);
 class PlayerDisconnectCallPacket extends Packet{
@@ -1415,6 +1599,9 @@ class PlayerDisconnectCallPacket extends Packet{
     }
     read(buf){
             this.playerid=buf.getInt()
+    }
+    handleClient(n){
+            n.playerDisconnect(playerid)
     }
 }
 Packets.set(57,PlayerDisconnectCallPacket);
@@ -1429,6 +1616,9 @@ class PlayerSpawnCallPacket extends Packet{
     read(buf){
             this.tile=TypeIO.readTile(buf);
         this.player=TypeIO.readEntity(buf)
+    }
+    handleClient(n){
+            mindustry.world.blocks.storage.CoreBlock.playerSpawn(tile, player)
     }
 }
 Packets.set(58,PlayerSpawnCallPacket);
@@ -1447,6 +1637,9 @@ class RemoveQueueBlockCallPacket extends Packet{
         this.y=buf.getInt();
         this.breaking=buf.get()
     }
+    handleClient(n){
+            InputHandler.removeQueueBlock(x, y, breaking)
+    }
 }
 Packets.set(59,RemoveQueueBlockCallPacket);
 class RemoveTileCallPacket extends Packet{
@@ -1458,6 +1651,9 @@ class RemoveTileCallPacket extends Packet{
     read(buf){
             this.tile=TypeIO.readTile(buf)
     }
+    handleClient(n){
+            Tile.removeTile(tile)
+    }
 }
 Packets.set(60,RemoveTileCallPacket);
 class RemoveWorldLabelCallPacket extends Packet{
@@ -1468,6 +1664,9 @@ class RemoveWorldLabelCallPacket extends Packet{
     }
     read(buf){
             this.id=buf.getInt()
+    }
+    handleClient(n){
+            
     }
 }
 Packets.set(61,RemoveWorldLabelCallPacket);
@@ -1483,6 +1682,12 @@ class RequestBuildPayloadCallPacket extends Packet{
             this.player=TypeIO.readEntity(buf);
         this.build=TypeIO.readBuilding(buf)
     }
+    handleServer(n){
+            InputHandler.requestBuildPayload(player, build)
+    }
+    handleClient(n){
+            InputHandler.requestBuildPayload(player, build)
+    }
 }
 Packets.set(62,RequestBuildPayloadCallPacket);
 class RequestDebugStatusCallPacket extends Packet{
@@ -1492,6 +1697,9 @@ class RequestDebugStatusCallPacket extends Packet{
     }
     read(buf){
     
+    }
+    handleServer(n){
+            n.requestDebugStatus(player)
     }
 }
 Packets.set(63,RequestDebugStatusCallPacket);
@@ -1509,6 +1717,12 @@ class RequestDropPayloadCallPacket extends Packet{
             this.player=TypeIO.readEntity(buf);
         this.x=buf.getFloat();
         this.y=buf.getFloat()
+    }
+    handleServer(n){
+            InputHandler.requestDropPayload(player, x, y)
+    }
+    handleClient(n){
+            InputHandler.requestDropPayload(player, x, y)
     }
 }
 Packets.set(64,RequestDropPayloadCallPacket);
@@ -1530,6 +1744,12 @@ class RequestItemCallPacket extends Packet{
         this.item=TypeIO.readItem(buf);
         this.amount=buf.getInt()
     }
+    handleServer(n){
+            InputHandler.requestItem(player, build, item, amount)
+    }
+    handleClient(n){
+            InputHandler.requestItem(player, build, item, amount)
+    }
 }
 Packets.set(65,RequestItemCallPacket);
 class RequestUnitPayloadCallPacket extends Packet{
@@ -1544,6 +1764,12 @@ class RequestUnitPayloadCallPacket extends Packet{
             this.player=TypeIO.readEntity(buf);
         this.target=TypeIO.readUnit(buf)
     }
+    handleServer(n){
+            InputHandler.requestUnitPayload(player, target)
+    }
+    handleClient(n){
+            InputHandler.requestUnitPayload(player, target)
+    }
 }
 Packets.set(66,RequestUnitPayloadCallPacket);
 class ResearchedCallPacket extends Packet{
@@ -1554,6 +1780,9 @@ class ResearchedCallPacket extends Packet{
     }
     read(buf){
             this.content=TypeIO.readContent(buf)
+    }
+    handleClient(n){
+            mindustry.core.Logic.researched(content)
     }
 }
 Packets.set(67,ResearchedCallPacket);
@@ -1572,6 +1801,12 @@ class RotateBlockCallPacket extends Packet{
         this.build=TypeIO.readBuilding(buf);
         this.direction=buf.get()
     }
+    handleServer(n){
+            InputHandler.rotateBlock(player, build, direction)
+    }
+    handleClient(n){
+            InputHandler.rotateBlock(player, build, direction)
+    }
 }
 Packets.set(68,RotateBlockCallPacket);
 class SectorCaptureCallPacket extends Packet{
@@ -1581,6 +1816,9 @@ class SectorCaptureCallPacket extends Packet{
     }
     read(buf){
     
+    }
+    handleClient(n){
+            mindustry.core.Logic.sectorCapture()
     }
 }
 Packets.set(69,SectorCaptureCallPacket);
@@ -1593,6 +1831,9 @@ class SendChatMessageCallPacket extends Packet{
     read(buf){
             this.message=TypeIO.readString(buf)
     }
+    handleServer(n){
+            n.sendChatMessage(player, message)
+    }
 }
 Packets.set(70,SendChatMessageCallPacket);
 class SendMessageCallPacket extends Packet{
@@ -1603,6 +1844,9 @@ class SendMessageCallPacket extends Packet{
     }
     read(buf){
             this.message=TypeIO.readString(buf)
+    }
+    handleClient(n){
+            n.sendMessage(message)
     }
 }
 Packets.set(71,SendMessageCallPacket);
@@ -1621,6 +1865,9 @@ class SendMessageCallPacket2 extends Packet{
         this.unformatted=TypeIO.readString(buf);
         this.playersender=TypeIO.readEntity(buf)
     }
+    handleClient(n){
+            n.sendMessage(message, unformatted, playersender)
+    }
 }
 Packets.set(72,SendMessageCallPacket2);
 class ServerPacketReliableCallPacket extends Packet{
@@ -1634,6 +1881,9 @@ class ServerPacketReliableCallPacket extends Packet{
     read(buf){
             this.type=TypeIO.readString(buf);
         this.contents=TypeIO.readString(buf)
+    }
+    handleServer(n){
+            n.serverPacketReliable(player, type, contents)
     }
 }
 Packets.set(73,ServerPacketReliableCallPacket);
@@ -1649,6 +1899,9 @@ class ServerPacketUnreliableCallPacket extends Packet{
             this.type=TypeIO.readString(buf);
         this.contents=TypeIO.readString(buf)
     }
+    handleServer(n){
+            n.serverPacketUnreliable(player, type, contents)
+    }
 }
 Packets.set(74,ServerPacketUnreliableCallPacket);
 class SetCameraPositionCallPacket extends Packet{
@@ -1662,6 +1915,9 @@ class SetCameraPositionCallPacket extends Packet{
     read(buf){
             this.x=buf.getFloat();
         this.y=buf.getFloat()
+    }
+    handleClient(n){
+            n.setCameraPosition(x, y)
     }
 }
 Packets.set(75,SetCameraPositionCallPacket);
@@ -1680,6 +1936,9 @@ class SetFloorCallPacket extends Packet{
         this.floor=TypeIO.readBlock(buf);
         this.overlay=TypeIO.readBlock(buf)
     }
+    handleClient(n){
+            Tile.setFloor(tile, floor, overlay)
+    }
 }
 Packets.set(76,SetFloorCallPacket);
 class SetHudTextCallPacket extends Packet{
@@ -1691,6 +1950,9 @@ class SetHudTextCallPacket extends Packet{
     read(buf){
             this.message=TypeIO.readString(buf)
     }
+    handleClient(n){
+            
+    }
 }
 Packets.set(77,SetHudTextCallPacket);
 class SetHudTextReliableCallPacket extends Packet{
@@ -1701,6 +1963,9 @@ class SetHudTextReliableCallPacket extends Packet{
     }
     read(buf){
             this.message=TypeIO.readString(buf)
+    }
+    handleClient(n){
+            
     }
 }
 Packets.set(78,SetHudTextReliableCallPacket);
@@ -1718,6 +1983,9 @@ class SetItemCallPacket extends Packet{
             this.build=TypeIO.readBuilding(buf);
         this.item=TypeIO.readItem(buf);
         this.amount=buf.getInt()
+    }
+    handleClient(n){
+            InputHandler.setItem(build, item, amount)
     }
 }
 Packets.set(79,SetItemCallPacket);
@@ -1739,6 +2007,9 @@ class SetMapAreaCallPacket extends Packet{
         this.w=buf.getInt();
         this.h=buf.getInt()
     }
+    handleClient(n){
+            mindustry.logic.LExecutor.setMapArea(x, y, w, h)
+    }
 }
 Packets.set(80,SetMapAreaCallPacket);
 class SetObjectivesCallPacket extends Packet{
@@ -1749,6 +2020,9 @@ class SetObjectivesCallPacket extends Packet{
     }
     read(buf){
             this.executor=TypeIO.readObjectives(buf)
+    }
+    handleClient(n){
+            n.setObjectives(executor)
     }
 }
 Packets.set(81,SetObjectivesCallPacket);
@@ -1764,6 +2038,9 @@ class SetOverlayCallPacket extends Packet{
             this.tile=TypeIO.readTile(buf);
         this.overlay=TypeIO.readBlock(buf)
     }
+    handleClient(n){
+            Tile.setOverlay(tile, overlay)
+    }
 }
 Packets.set(82,SetOverlayCallPacket);
 class SetPlayerTeamEditorCallPacket extends Packet{
@@ -1777,6 +2054,12 @@ class SetPlayerTeamEditorCallPacket extends Packet{
     read(buf){
             this.player=TypeIO.readEntity(buf);
         this.team=TypeIO.readTeam(buf)
+    }
+    handleServer(n){
+            
+    }
+    handleClient(n){
+            
     }
 }
 Packets.set(83,SetPlayerTeamEditorCallPacket);
@@ -1792,6 +2075,9 @@ class SetPositionCallPacket extends Packet{
             this.x=buf.getFloat();
         this.y=buf.getFloat()
     }
+    handleClient(n){
+            n.setPosition(x, y)
+    }
 }
 Packets.set(84,SetPositionCallPacket);
 class SetRulesCallPacket extends Packet{
@@ -1802,6 +2088,9 @@ class SetRulesCallPacket extends Packet{
     }
     read(buf){
             this.rules=TypeIO.readRules(buf)
+    }
+    handleClient(n){
+            n.setRules(rules)
     }
 }
 Packets.set(85,SetRulesCallPacket);
@@ -1816,6 +2105,9 @@ class SetTeamCallPacket extends Packet{
     read(buf){
             this.build=TypeIO.readBuilding(buf);
         this.team=TypeIO.readTeam(buf)
+    }
+    handleClient(n){
+            Tile.setTeam(build, team)
     }
 }
 Packets.set(86,SetTeamCallPacket);
@@ -1837,6 +2129,9 @@ class SetTileCallPacket extends Packet{
         this.team=TypeIO.readTeam(buf);
         this.rotation=buf.getInt()
     }
+    handleClient(n){
+            Tile.setTile(tile, block, team, rotation)
+    }
 }
 Packets.set(87,SetTileCallPacket);
 class SetUnitCommandCallPacket extends Packet{
@@ -1853,6 +2148,12 @@ class SetUnitCommandCallPacket extends Packet{
             this.player=TypeIO.readEntity(buf);
         this.unitIds=TypeIO.readInts(buf);
         this.command=TypeIO.readCommand(buf)
+    }
+    handleServer(n){
+            InputHandler.setUnitCommand(player, unitIds, command)
+    }
+    handleClient(n){
+            InputHandler.setUnitCommand(player, unitIds, command)
     }
 }
 Packets.set(88,SetUnitCommandCallPacket);
@@ -1873,6 +2174,9 @@ class SoundCallPacket extends Packet{
         this.volume=buf.getFloat();
         this.pitch=buf.getFloat();
         this.pan=buf.getFloat()
+    }
+    handleClient(n){
+            n.sound(sound, volume, pitch, pan)
     }
 }
 Packets.set(89,SoundCallPacket);
@@ -1897,6 +2201,9 @@ class SoundAtCallPacket extends Packet{
         this.volume=buf.getFloat();
         this.pitch=buf.getFloat()
     }
+    handleClient(n){
+            n.soundAt(sound, x, y, volume, pitch)
+    }
 }
 Packets.set(90,SoundAtCallPacket);
 class SpawnEffectCallPacket extends Packet{
@@ -1916,6 +2223,9 @@ class SpawnEffectCallPacket extends Packet{
         this.y=buf.getFloat();
         this.rotation=buf.getFloat();
         this.u=TypeIO.readUnitType(buf)
+    }
+    handleClient(n){
+            mindustry.ai.WaveSpawner.spawnEffect(x, y, rotation, u)
     }
 }
 Packets.set(91,SpawnEffectCallPacket);
@@ -1958,6 +2268,9 @@ class StateSnapshotCallPacket extends Packet{
         this.rand1=buf.getLong();
         this.coreData=TypeIO.readBytes(buf)
     }
+    handleClient(n){
+            n.stateSnapshot(waveTime, wave, enemies, paused, gameOver, timeData, tps, rand0, rand1, coreData)
+    }
 }
 Packets.set(92,StateSnapshotCallPacket);
 class TakeItemsCallPacket extends Packet{
@@ -1977,6 +2290,9 @@ class TakeItemsCallPacket extends Packet{
         this.item=TypeIO.readItem(buf);
         this.amount=buf.getInt();
         this.to=TypeIO.readUnit(buf)
+    }
+    handleClient(n){
+            InputHandler.takeItems(build, item, amount, to)
     }
 }
 Packets.set(93,TakeItemsCallPacket);
@@ -2004,6 +2320,9 @@ class TextInputCallPacket extends Packet{
         this.def=TypeIO.readString(buf);
         this.numeric=buf.get()
     }
+    handleClient(n){
+            
+    }
 }
 Packets.set(94,TextInputCallPacket);
 class TextInputResultCallPacket extends Packet{
@@ -2020,6 +2339,12 @@ class TextInputResultCallPacket extends Packet{
             this.player=TypeIO.readEntity(buf);
         this.textInputId=buf.getInt();
         this.text=TypeIO.readString(buf)
+    }
+    handleServer(n){
+            
+    }
+    handleClient(n){
+            
     }
 }
 Packets.set(95,TextInputResultCallPacket);
@@ -2038,6 +2363,12 @@ class TileConfigCallPacket extends Packet{
         this.build=TypeIO.readBuilding(buf);
         this.value=TypeIO.readObject(buf)
     }
+    handleServer(n){
+            InputHandler.tileConfig(player, build, value)
+    }
+    handleClient(n){
+            InputHandler.tileConfig(player, build, value)
+    }
 }
 Packets.set(96,TileConfigCallPacket);
 class TileTapCallPacket extends Packet{
@@ -2051,6 +2382,12 @@ class TileTapCallPacket extends Packet{
     read(buf){
             this.player=TypeIO.readEntity(buf);
         this.tile=TypeIO.readTile(buf)
+    }
+    handleServer(n){
+            InputHandler.tileTap(player, tile)
+    }
+    handleClient(n){
+            InputHandler.tileTap(player, tile)
     }
 }
 Packets.set(97,TileTapCallPacket);
@@ -2066,6 +2403,9 @@ class TraceInfoCallPacket extends Packet{
             this.player=TypeIO.readEntity(buf);
         this.info=TypeIO.readTraceInfo(buf)
     }
+    handleClient(n){
+            n.traceInfo(player, info)
+    }
 }
 Packets.set(98,TraceInfoCallPacket);
 class TransferInventoryCallPacket extends Packet{
@@ -2079,6 +2419,12 @@ class TransferInventoryCallPacket extends Packet{
     read(buf){
             this.player=TypeIO.readEntity(buf);
         this.build=TypeIO.readBuilding(buf)
+    }
+    handleServer(n){
+            InputHandler.transferInventory(player, build)
+    }
+    handleClient(n){
+            InputHandler.transferInventory(player, build)
     }
 }
 Packets.set(99,TransferInventoryCallPacket);
@@ -2099,6 +2445,9 @@ class TransferItemEffectCallPacket extends Packet{
         this.x=buf.getFloat();
         this.y=buf.getFloat();
         this.to=TypeIO.readEntity(buf)
+    }
+    handleClient(n){
+            InputHandler.transferItemEffect(item, x, y, to)
     }
 }
 Packets.set(100,TransferItemEffectCallPacket);
@@ -2126,6 +2475,9 @@ class TransferItemToCallPacket extends Packet{
         this.y=buf.getFloat();
         this.build=TypeIO.readBuilding(buf)
     }
+    handleClient(n){
+            InputHandler.transferItemTo(unit, item, amount, x, y, build)
+    }
 }
 Packets.set(101,TransferItemToCallPacket);
 class TransferItemToUnitCallPacket extends Packet{
@@ -2146,6 +2498,9 @@ class TransferItemToUnitCallPacket extends Packet{
         this.y=buf.getFloat();
         this.to=TypeIO.readEntity(buf)
     }
+    handleClient(n){
+            InputHandler.transferItemToUnit(item, x, y, to)
+    }
 }
 Packets.set(102,TransferItemToUnitCallPacket);
 class UnitBlockSpawnCallPacket extends Packet{
@@ -2156,6 +2511,9 @@ class UnitBlockSpawnCallPacket extends Packet{
     }
     read(buf){
             this.tile=TypeIO.readTile(buf)
+    }
+    handleClient(n){
+            mindustry.world.blocks.units.UnitBlock.unitBlockSpawn(tile)
     }
 }
 Packets.set(103,UnitBlockSpawnCallPacket);
@@ -2171,6 +2529,9 @@ class UnitBuildingControlSelectCallPacket extends Packet{
             this.unit=TypeIO.readUnit(buf);
         this.build=TypeIO.readBuilding(buf)
     }
+    handleClient(n){
+            InputHandler.unitBuildingControlSelect(unit, build)
+    }
 }
 Packets.set(104,UnitBuildingControlSelectCallPacket);
 class UnitCapDeathCallPacket extends Packet{
@@ -2182,6 +2543,9 @@ class UnitCapDeathCallPacket extends Packet{
     read(buf){
             this.unit=TypeIO.readUnit(buf)
     }
+    handleClient(n){
+            mindustry.entities.Units.unitCapDeath(unit)
+    }
 }
 Packets.set(105,UnitCapDeathCallPacket);
 class UnitClearCallPacket extends Packet{
@@ -2192,6 +2556,12 @@ class UnitClearCallPacket extends Packet{
     }
     read(buf){
             this.player=TypeIO.readEntity(buf)
+    }
+    handleServer(n){
+            InputHandler.unitClear(player)
+    }
+    handleClient(n){
+            InputHandler.unitClear(player)
     }
 }
 Packets.set(106,UnitClearCallPacket);
@@ -2207,6 +2577,12 @@ class UnitControlCallPacket extends Packet{
             this.player=TypeIO.readEntity(buf);
         this.unit=TypeIO.readUnit(buf)
     }
+    handleServer(n){
+            InputHandler.unitControl(player, unit)
+    }
+    handleClient(n){
+            InputHandler.unitControl(player, unit)
+    }
 }
 Packets.set(107,UnitControlCallPacket);
 class UnitDeathCallPacket extends Packet{
@@ -2217,6 +2593,9 @@ class UnitDeathCallPacket extends Packet{
     }
     read(buf){
             this.uid=buf.getInt()
+    }
+    handleClient(n){
+            mindustry.entities.Units.unitDeath(uid)
     }
 }
 Packets.set(108,UnitDeathCallPacket);
@@ -2229,6 +2608,9 @@ class UnitDespawnCallPacket extends Packet{
     read(buf){
             this.unit=TypeIO.readUnit(buf)
     }
+    handleClient(n){
+            mindustry.entities.Units.unitDespawn(unit)
+    }
 }
 Packets.set(109,UnitDespawnCallPacket);
 class UnitDestroyCallPacket extends Packet{
@@ -2240,6 +2622,9 @@ class UnitDestroyCallPacket extends Packet{
     read(buf){
             this.uid=buf.getInt()
     }
+    handleClient(n){
+            mindustry.entities.Units.unitDestroy(uid)
+    }
 }
 Packets.set(110,UnitDestroyCallPacket);
 class UnitEnvDeathCallPacket extends Packet{
@@ -2250,6 +2635,9 @@ class UnitEnvDeathCallPacket extends Packet{
     }
     read(buf){
             this.unit=TypeIO.readUnit(buf)
+    }
+    handleClient(n){
+            mindustry.entities.Units.unitEnvDeath(unit)
     }
 }
 Packets.set(111,UnitEnvDeathCallPacket);
@@ -2265,6 +2653,9 @@ class UnitTetherBlockSpawnedCallPacket extends Packet{
             this.tile=TypeIO.readTile(buf);
         this.id=buf.getInt()
     }
+    handleClient(n){
+            mindustry.world.blocks.units.UnitCargoLoader.unitTetherBlockSpawned(tile, id)
+    }
 }
 Packets.set(112,UnitTetherBlockSpawnedCallPacket);
 class UpdateGameOverCallPacket extends Packet{
@@ -2275,6 +2666,9 @@ class UpdateGameOverCallPacket extends Packet{
     }
     read(buf){
             this.winner=TypeIO.readTeam(buf)
+    }
+    handleClient(n){
+            mindustry.core.Logic.updateGameOver(winner)
     }
 }
 Packets.set(113,UpdateGameOverCallPacket);
@@ -2290,6 +2684,9 @@ class WarningToastCallPacket extends Packet{
             this.unicode=buf.getInt();
         this.text=TypeIO.readString(buf)
     }
+    handleClient(n){
+            
+    }
 }
 Packets.set(114,WarningToastCallPacket);
 class WorldDataBeginCallPacket extends Packet{
@@ -2299,6 +2696,9 @@ class WorldDataBeginCallPacket extends Packet{
     }
     read(buf){
     
+    }
+    handleClient(n){
+            n.worldDataBegin()
     }
 }
 Packets.set(115,WorldDataBeginCallPacket);
@@ -2825,11 +3225,7 @@ class NetClient{
                     packet.handleClient(this)
                 }
             }
-        }catch(e){
-            this.reset();
-            console.error(e.stack);
-            this.#event.emit("error",e)
-        }
+        }catch(ignored){}
     }
     loadWorld(packet){
         let buf=DataStream.from(zlib.inflateSync(packet.stream));
