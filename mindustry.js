@@ -3,8 +3,6 @@ const Packets=require("./lib/Packets");
 const NetClient=require("./lib/NetClient");
 const World=require("./lib/World");
 
-const debug=false;
-
 const mindustry={};
 
 class Events{
