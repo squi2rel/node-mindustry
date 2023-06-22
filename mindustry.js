@@ -2,6 +2,7 @@ const {EventEmitter}=require("events");
 const Packets=require("./lib/Packets");
 const NetClient=require("./lib/NetClient");
 const World=require("./lib/World");
+const dgram=require("dgram");
 
 const mindustry={};
 
