@@ -1,6 +1,6 @@
 {
   "name": "mindustry",
-  "version": "0.1.21",
+  "version": "0.2.0",
   "description": "headless mindustry!",
   "main": "mindustry.js",
   "scripts": {
