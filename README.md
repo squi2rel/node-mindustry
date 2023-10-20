@@ -14,7 +14,7 @@
   c.on("SendMessageCallPacket2",p=>{
     console.log(p.message)
   })
-  c.connect(10404,"n2.akiracloud.net")//port,ip
+  c.connect(3000,"130.61.78.82")//port,ip
 ```
 
 ## join game and get map png
@@ -30,12 +30,12 @@
   c.netClient.on("SendMessageCallPacket2",p=>{
     console.log(p.message)
   })
-  c.netClient.connect(10404,"n2.akiracloud.net")
+  c.netClient.connect(3000,"130.61.78.82")
 ```
 
 ## get server info
 ```javascript
-  require("mindustry").pingHost(10404,"n2.akiracloud.net",(data,err)=>{//port,ip,callback
+  require("mindustry").pingHost(3000,"130.61.78.82",(data,err)=>{//port,ip,callback
     if(err){
       console.error(err.stack)
     } else {
