@@ -1,6 +1,7 @@
 const { EventEmitter } = require("events");
 const Packets = require("./lib/Packets");
 const NetClient = require("./lib/NetClient");
+const DataStream = require("./lib/DataStream");
 const World = require("./lib/World");
 const dgram = require("dgram");
 
