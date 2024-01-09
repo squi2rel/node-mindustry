@@ -4,6 +4,7 @@ const NetClient = require("./lib/NetClient");
 const DataStream = require("./lib/DataStream");
 const Call = require("./lib/Call");
 const World = require("./lib/World");
+const Player = require("./lib/Player");
 const dgram = require("dgram");
 
 const mindustry = {};
@@ -66,11 +67,13 @@ class Mindustry {
     world;
     events;
     call;
+    player;
     constructor() {
         this.netClient = new NetClient(this);
         this.world = new World();
         this.events = new Events();
-        this.call = new Call(this)
+        this.call = new Call(this);
+        this.player = new Player()
     }
 }
 
