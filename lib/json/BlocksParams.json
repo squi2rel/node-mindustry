@@ -1,0 +1,2542 @@
+{
+  "cliff": {
+    "inEditor": null,
+    "saveData": true
+  },
+  "deep-water": {
+    "speedMultiplier": 0.2,
+    "variants": "0",
+    "liquidDrop": null,
+    "liquidMultiplier": 1.5,
+    "isLiquid": true,
+    "status": null,
+    "statusDuration": 120,
+    "drownTime": 200,
+    "cacheLayer": null,
+    "albedo": 0.9,
+    "supportsOverlay": true
+  },
+  "shallow-water": {
+    "speedMultiplier": 0.5,
+    "variants": "0",
+    "status": null,
+    "statusDuration": 90,
+    "liquidDrop": null,
+    "isLiquid": true,
+    "cacheLayer": null,
+    "albedo": 0.9,
+    "supportsOverlay": true
+  },
+  "tainted-water": {
+    "speedMultiplier": 0.5,
+    "variants": "0",
+    "status": null,
+    "statusDuration": 90,
+    "liquidDrop": null,
+    "isLiquid": true,
+    "cacheLayer": null,
+    "albedo": 0.9,
+    "supportsOverlay": true
+  },
+  "deep-tainted-water": {
+    "speedMultiplier": 0.18,
+    "variants": "0",
+    "status": null,
+    "statusDuration": 140,
+    "drownTime": 200,
+    "liquidDrop": null,
+    "isLiquid": true,
+    "cacheLayer": null,
+    "albedo": 0.9,
+    "supportsOverlay": true
+  },
+  "darksand-tainted-water": {
+    "speedMultiplier": 0.75,
+    "statusDuration": 60,
+    "albedo": 0.9,
+    "supportsOverlay": true
+  },
+  "sand-water": {
+    "speedMultiplier": 0.8,
+    "statusDuration": 50,
+    "albedo": 0.9,
+    "supportsOverlay": true
+  },
+  "darksand-water": {
+    "speedMultiplier": 0.8,
+    "statusDuration": 50,
+    "albedo": 0.9,
+    "supportsOverlay": true
+  },
+  "tar": {
+    "drownTime": 230,
+    "status": null,
+    "statusDuration": 240,
+    "speedMultiplier": 0.19,
+    "variants": "0",
+    "liquidDrop": null,
+    "isLiquid": true,
+    "cacheLayer": null
+  },
+  "pooled-cryofluid": {
+    "drownTime": 150,
+    "status": null,
+    "statusDuration": 240,
+    "speedMultiplier": 0.5,
+    "variants": "0",
+    "liquidDrop": null,
+    "liquidMultiplier": 0.5,
+    "isLiquid": true,
+    "cacheLayer": null,
+    "emitLight": true,
+    "lightRadius": 25,
+    "lightColor": null
+  },
+  "molten-slag": {
+    "drownTime": 230,
+    "status": null,
+    "statusDuration": 240,
+    "speedMultiplier": 0.19,
+    "variants": "0",
+    "liquidDrop": null,
+    "isLiquid": true,
+    "cacheLayer": null,
+    "emitLight": true,
+    "lightRadius": 40,
+    "lightColor": null
+  },
+  "space": {
+    "cacheLayer": null,
+    "placeableOn": null,
+    "solid": true,
+    "variants": "0",
+    "canShadow": null
+  },
+  "crater-stone": {
+    "variants": "3",
+    "blendGroup": "stone"
+  },
+  "char": {
+    "blendGroup": "stone"
+  },
+  "basalt": {},
+  "hotrock": {
+    "blendGroup": "basalt",
+    "emitLight": true,
+    "lightRadius": 30,
+    "lightColor": null
+  },
+  "magmarock": {
+    "blendGroup": "basalt",
+    "emitLight": true,
+    "lightRadius": 50,
+    "lightColor": null
+  },
+  "sand-floor": {
+    "itemDrop": null,
+    "playerUnmineable": true
+  },
+  "darksand": {
+    "itemDrop": null,
+    "playerUnmineable": true
+  },
+  "mud": {
+    "speedMultiplier": 0.6,
+    "variants": "3",
+    "status": null,
+    "statusDuration": 30,
+    "cacheLayer": null,
+    "walkSound": null,
+    "walkSoundVolume": 0.08,
+    "walkSoundPitchMin": 0.4,
+    "walkSoundPitchMax": 0.5
+  },
+  "rhyolite": {},
+  "rhyolite-crater": {
+    "blendGroup": "rhyolite"
+  },
+  "rough-rhyolite": {
+    "variants": "3"
+  },
+  "regolith": {},
+  "yellow-stone": {},
+  "carbon-stone": {
+    "variants": "4"
+  },
+  "ferric-stone": {},
+  "ferric-craters": {
+    "variants": "3",
+    "blendGroup": null
+  },
+  "beryllic-stone": {
+    "variants": "4"
+  },
+  "crystalline-stone": {
+    "variants": "5"
+  },
+  "crystal-floor": {
+    "variants": "4"
+  },
+  "yellow-stone-plates": {
+    "variants": "3"
+  },
+  "red-stone": {
+    "variants": "4"
+  },
+  "dense-red-stone": {
+    "variants": "4"
+  },
+  "red-ice": {
+    "dragMultiplier": 0.4,
+    "speedMultiplier": 0.9
+  },
+  "arkycite-floor": {
+    "speedMultiplier": 0.3,
+    "variants": "0",
+    "liquidDrop": null,
+    "isLiquid": true,
+    "status": null,
+    "statusDuration": 120,
+    "drownTime": 200,
+    "cacheLayer": null,
+    "albedo": 0.9
+  },
+  "arkyic-stone": {
+    "variants": "3"
+  },
+  "rhyolite-vent": {
+    "parent": "rhyolite",
+    "blendGroup": "rhyolite"
+  },
+  "carbon-vent": {
+    "parent": "carbonStone",
+    "blendGroup": "carbonStone"
+  },
+  "arkyic-vent": {
+    "parent": "arkyicStone",
+    "blendGroup": "arkyicStone"
+  },
+  "yellow-stone-vent": {
+    "parent": "yellowStone",
+    "blendGroup": "yellowStone"
+  },
+  "red-stone-vent": {
+    "parent": "denseRedStone",
+    "blendGroup": "denseRedStone"
+  },
+  "crystalline-vent": {
+    "parent": "crystallineStone",
+    "blendGroup": "crystallineStone"
+  },
+  "grass": {},
+  "salt": {
+    "variants": "0"
+  },
+  "snow": {
+    "albedo": 0.7
+  },
+  "ice": {
+    "dragMultiplier": 0.35,
+    "speedMultiplier": 0.9,
+    "albedo": 0.65
+  },
+  "ice-snow": {
+    "dragMultiplier": 0.6,
+    "variants": "3",
+    "albedo": 0.6
+  },
+  "shale": {
+    "variants": "3"
+  },
+  "moss": {
+    "variants": "3"
+  },
+  "core-zone": {
+    "variants": "0",
+    "allowCorePlacement": true
+  },
+  "spore-moss": {
+    "variants": "3"
+  },
+  "stone-wall": {},
+  "spore-wall": {
+    "wall": null
+  },
+  "ice-wall": {
+    "wall": "this",
+    "albedo": 0.6
+  },
+  "dune-wall": {
+    "wall": null
+  },
+  "regolith-wall": {
+    "wall": "this"
+  },
+  "yellow-stone-wall": {
+    "wall": null
+  },
+  "rhyolite-wall": {
+    "wall": null
+  },
+  "carbon-wall": {
+    "wall": "this"
+  },
+  "ferric-stone-wall": {
+    "wall": "this"
+  },
+  "beryllic-stone-wall": {
+    "wall": "this"
+  },
+  "arkyic-wall": {
+    "variants": "3",
+    "wall": null
+  },
+  "crystalline-stone-wall": {
+    "variants": "4",
+    "wall": null
+  },
+  "red-ice-wall": {
+    "wall": "this"
+  },
+  "red-stone-wall": {
+    "wall": null
+  },
+  "red-diamond-wall": {
+    "variants": "3"
+  },
+  "sand-wall": {
+    "wall": null
+  },
+  "spore-pine": {
+    "wall": "this"
+  },
+  "spore-cluster": {
+    "variants": "3",
+    "breakSound": null
+  },
+  "redweed": {
+    "variants": "3",
+    "decoration": "this"
+  },
+  "pur-bush": {
+    "decoration": "this"
+  },
+  "yellowcoral": {
+    "lobesMin": "2",
+    "lobesMax": "3",
+    "magMax": 8,
+    "magMin": 2,
+    "origin": 0.3,
+    "spread": 40,
+    "sclMin": 60,
+    "sclMax": 100
+  },
+  "boulder": {
+    "variants": "2",
+    "decoration": null
+  },
+  "snow-boulder": {
+    "variants": "2",
+    "decoration": null
+  },
+  "shale-boulder": {
+    "variants": "2",
+    "decoration": "this"
+  },
+  "sand-boulder": {
+    "variants": "2",
+    "decoration": "this"
+  },
+  "dacite-boulder": {
+    "variants": "2",
+    "decoration": "this"
+  },
+  "basalt-boulder": {
+    "variants": "2",
+    "decoration": null
+  },
+  "carbon-boulder": {
+    "variants": "2",
+    "decoration": "this"
+  },
+  "ferric-boulder": {
+    "variants": "2",
+    "decoration": null
+  },
+  "beryllic-boulder": {
+    "variants": "2",
+    "decoration": "this"
+  },
+  "yellow-stone-boulder": {
+    "variants": "2",
+    "decoration": null
+  },
+  "arkyic-boulder": {
+    "variants": "3",
+    "customShadow": true,
+    "decoration": "this"
+  },
+  "crystal-cluster": {
+    "variants": "3",
+    "clipSize": 128
+  },
+  "vibrant-crystal-cluster": {
+    "variants": "3",
+    "clipSize": 128
+  },
+  "crystal-blocks": {
+    "variants": "3",
+    "clipSize": 128,
+    "shadowAlpha": 0.5,
+    "shadowOffset": -2.5
+  },
+  "crystal-orbs": {
+    "variants": "3",
+    "clipSize": 128,
+    "shadowAlpha": 0.5,
+    "shadowOffset": -2.5
+  },
+  "crystalline-boulder": {
+    "variants": "2",
+    "decoration": "this"
+  },
+  "red-ice-boulder": {
+    "variants": "3",
+    "decoration": "this"
+  },
+  "rhyolite-boulder": {
+    "variants": "3",
+    "decoration": null
+  },
+  "red-stone-boulder": {
+    "variants": "4",
+    "decoration": null
+  },
+  "graphitic-wall": {
+    "itemDrop": null,
+    "variants": "3"
+  },
+  "graphite-press": {
+    "craftEffect": null,
+    "outputItem": null,
+    "craftTime": 90,
+    "size": "2",
+    "hasItems": true
+  },
+  "multi-press": {
+    "craftEffect": null,
+    "outputItem": null,
+    "craftTime": 30,
+    "itemCapacity": "20",
+    "size": "3",
+    "hasItems": true,
+    "hasLiquids": true,
+    "hasPower": true
+  },
+  "silicon-smelter": {
+    "craftEffect": null,
+    "outputItem": null,
+    "craftTime": 40,
+    "size": "2",
+    "hasPower": true,
+    "hasLiquids": null,
+    "drawer": null,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.07
+  },
+  "silicon-crucible": {
+    "craftEffect": null,
+    "outputItem": null,
+    "craftTime": 90,
+    "size": "3",
+    "hasPower": true,
+    "hasLiquids": null,
+    "itemCapacity": "30",
+    "boostScale": 0.15,
+    "drawer": null,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.07
+  },
+  "kiln": {
+    "craftEffect": null,
+    "outputItem": null,
+    "craftTime": 30,
+    "size": "2",
+    "hasPower": true,
+    "hasItems": true,
+    "drawer": null,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.07
+  },
+  "plastanium-compressor": {
+    "hasItems": true,
+    "liquidCapacity": 60,
+    "craftTime": 60,
+    "outputItem": null,
+    "size": "2",
+    "health": "320",
+    "hasPower": true,
+    "hasLiquids": true,
+    "craftEffect": null,
+    "updateEffect": null,
+    "drawer": null
+  },
+  "phase-weaver": {
+    "craftEffect": null,
+    "outputItem": null,
+    "craftTime": 120,
+    "size": "2",
+    "hasPower": true,
+    "drawer": null,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.02,
+    "itemCapacity": "30"
+  },
+  "surge-smelter": {
+    "craftEffect": null,
+    "outputItem": null,
+    "craftTime": 75,
+    "size": "3",
+    "hasPower": true,
+    "itemCapacity": "20",
+    "drawer": null
+  },
+  "cryofluid-mixer": {
+    "outputLiquid": null,
+    "size": "2",
+    "hasPower": true,
+    "hasItems": true,
+    "hasLiquids": true,
+    "rotate": null,
+    "solid": true,
+    "outputsLiquid": true,
+    "envEnabled": null,
+    "drawer": null
+  },
+  "pyratite-mixer": {
+    "hasItems": true,
+    "hasPower": true,
+    "outputItem": null,
+    "size": "2"
+  },
+  "blast-mixer": {
+    "hasItems": true,
+    "hasPower": true,
+    "outputItem": null,
+    "size": "2"
+  },
+  "melter": {
+    "health": "200",
+    "outputLiquid": null,
+    "craftTime": 10,
+    "hasLiquids": true,
+    "hasPower": true,
+    "drawer": null
+  },
+  "separator": {
+    "hasPower": true,
+    "craftTime": 35,
+    "size": "2",
+    "drawer": null
+  },
+  "disassembler": {
+    "hasPower": true,
+    "craftTime": 15,
+    "size": "3",
+    "itemCapacity": "20",
+    "drawer": null
+  },
+  "spore-press": {
+    "liquidCapacity": 60,
+    "craftTime": 20,
+    "outputLiquid": null,
+    "size": "2",
+    "health": "320",
+    "hasLiquids": true,
+    "hasPower": true,
+    "craftEffect": null,
+    "sinMag": 1
+  },
+  "pulverizer": {
+    "outputItem": null,
+    "craftEffect": null,
+    "craftTime": 40,
+    "updateEffect": null,
+    "hasItems": true,
+    "hasPower": true,
+    "spinSprite": true,
+    "rotateSpeed": 2
+  },
+  "coal-centrifuge": {
+    "craftEffect": null,
+    "outputItem": null,
+    "craftTime": 30,
+    "size": "2",
+    "hasPower": true,
+    "hasItems": true,
+    "hasLiquids": true,
+    "rotateDraw": null
+  },
+  "incinerator": {
+    "health": "90"
+  },
+  "silicon-arc-furnace": {
+    "craftEffect": null,
+    "outputItem": null,
+    "craftTime": 50,
+    "size": "3",
+    "hasPower": true,
+    "hasLiquids": null,
+    "envDisabled": null,
+    "itemCapacity": "30",
+    "drawer": null,
+    "fogRadius": "3",
+    "researchCost": null,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.12
+  },
+  "electrolyzer": {
+    "size": "3",
+    "researchCostMultiplier": 1.2,
+    "craftTime": 10,
+    "rotate": true,
+    "invertFlip": true,
+    "group": null,
+    "itemCapacity": "0",
+    "liquidCapacity": 50,
+    "sides": "10",
+    "recurrence": 3,
+    "spread": "6",
+    "radius": 1.5,
+    "amount": "20"
+  },
+  "atmospheric-concentrator": {
+    "size": "3",
+    "hasLiquids": true,
+    "color": null,
+    "alpha": 0.6,
+    "particleSize": 4,
+    "particles": "10",
+    "particleRad": 12,
+    "particleLife": 140
+  },
+  "oxidation-chamber": {
+    "size": "3",
+    "outputItem": null,
+    "researchCostMultiplier": 1.1,
+    "rotateDraw": null,
+    "drawer": null,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.08,
+    "regionRotated1": "2",
+    "craftTime": 60,
+    "liquidCapacity": 30,
+    "heatOutput": 5
+  },
+  "electric-heater": {
+    "researchCostMultiplier": 4,
+    "drawer": null,
+    "rotateDraw": null,
+    "size": "2",
+    "heatOutput": 3,
+    "regionRotated1": "1",
+    "ambientSound": null,
+    "itemCapacity": "0"
+  },
+  "slag-heater": {
+    "researchCostMultiplier": 4,
+    "drawer": null,
+    "size": "3",
+    "itemCapacity": "0",
+    "liquidCapacity": 40,
+    "rotateDraw": null,
+    "regionRotated1": "1",
+    "ambientSound": null,
+    "heatOutput": 8,
+    "researchCost": null
+  },
+  "phase-heater": {
+    "drawer": null,
+    "size": "2",
+    "heatOutput": 15,
+    "craftTime": 60,
+    "ambientSound": null
+  },
+  "heat-redirector": {
+    "researchCostMultiplier": 10,
+    "group": null,
+    "size": "3",
+    "drawer": null,
+    "regionRotated1": "1"
+  },
+  "small-heat-redirector": {
+    "researchCostMultiplier": 10,
+    "group": null,
+    "size": "2",
+    "drawer": null,
+    "regionRotated1": "1"
+  },
+  "heat-router": {
+    "researchCostMultiplier": 10,
+    "group": null,
+    "size": "3",
+    "drawer": null,
+    "regionRotated1": "1",
+    "splitHeat": true
+  },
+  "slag-incinerator": {
+    "size": "1"
+  },
+  "carbide-crucible": {
+    "craftEffect": null,
+    "outputItem": null,
+    "craftTime": 60,
+    "size": "3",
+    "itemCapacity": "20",
+    "hasPower": true,
+    "hasItems": true,
+    "drawer": null,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.09,
+    "heatRequirement": 10
+  },
+  "slag-centrifuge": {
+    "size": "3",
+    "liquidCapacity": 80,
+    "drawers": null
+  },
+  "surge-crucible": {
+    "size": "3",
+    "itemCapacity": "20",
+    "heatRequirement": 10,
+    "craftTime": 60,
+    "liquidCapacity": 80,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.9,
+    "outputItem": null,
+    "craftEffect": null,
+    "color": null,
+    "strokeMax": 2.5,
+    "radius": 10,
+    "amount": "3"
+  },
+  "cyanogen-synthesizer": {
+    "heatRequirement": 5,
+    "color": null,
+    "alpha": 0.5,
+    "particleSize": 3,
+    "particles": "10",
+    "particleRad": 9,
+    "particleLife": 200,
+    "reverse": true,
+    "particleSizeInterp": null
+  },
+  "phase-synthesizer": {
+    "size": "3",
+    "itemCapacity": "40",
+    "heatRequirement": 8,
+    "craftTime": 60,
+    "liquidCapacity": 10,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.04,
+    "outputItem": null,
+    "color": null,
+    "stroke": 1.5,
+    "layers": "2",
+    "amount": "12",
+    "rotateSpeed": 0.5,
+    "layerSpeed": -0.9
+  },
+  "heat-reactor": {
+    "size": "3",
+    "craftTime": 60,
+    "craftEffect": null,
+    "itemCapacity": "20",
+    "outputItem": null
+  },
+  "copper-wall": {
+    "health": "80 * wallHealthMultiplier",
+    "researchCostMultiplier": 0.1
+  },
+  "copper-wall-large": {
+    "health": "80 * 4 * wallHealthMultiplier",
+    "size": "2"
+  },
+  "titanium-wall": {
+    "health": "110 * wallHealthMultiplier"
+  },
+  "titanium-wall-large": {
+    "health": "110 * wallHealthMultiplier * 4",
+    "size": "2"
+  },
+  "plastanium-wall": {
+    "health": "125 * wallHealthMultiplier",
+    "insulated": true,
+    "absorbLasers": true,
+    "schematicPriority": "10"
+  },
+  "plastanium-wall-large": {
+    "health": "125 * wallHealthMultiplier * 4",
+    "size": "2",
+    "insulated": true,
+    "absorbLasers": true,
+    "schematicPriority": "10"
+  },
+  "thorium-wall": {
+    "health": "200 * wallHealthMultiplier"
+  },
+  "thorium-wall-large": {
+    "health": "200 * wallHealthMultiplier * 4",
+    "size": "2"
+  },
+  "phase-wall": {
+    "health": "150 * wallHealthMultiplier",
+    "chanceDeflect": 10,
+    "flashHit": true
+  },
+  "phase-wall-large": {
+    "health": "150 * 4 * wallHealthMultiplier",
+    "size": "2",
+    "chanceDeflect": 10,
+    "flashHit": true
+  },
+  "surge-wall": {
+    "health": "230 * wallHealthMultiplier",
+    "lightningChance": 0.05
+  },
+  "surge-wall-large": {
+    "health": "230 * 4 * wallHealthMultiplier",
+    "size": "2",
+    "lightningChance": 0.05
+  },
+  "door": {
+    "health": "100 * wallHealthMultiplier"
+  },
+  "door-large": {
+    "openfx": null,
+    "closefx": null,
+    "health": "100 * 4 * wallHealthMultiplier",
+    "size": "2"
+  },
+  "scrap-wall": {
+    "health": "60 * wallHealthMultiplier",
+    "variants": "5",
+    "buildCostMultiplier": 4
+  },
+  "scrap-wall-large": {
+    "health": "60 * 4 * wallHealthMultiplier",
+    "size": "2",
+    "variants": "4",
+    "buildCostMultiplier": 4
+  },
+  "scrap-wall-huge": {
+    "health": "60 * 9 * wallHealthMultiplier",
+    "size": "3",
+    "variants": "3",
+    "buildCostMultiplier": 4
+  },
+  "scrap-wall-gigantic": {
+    "health": "60 * 16 * wallHealthMultiplier",
+    "size": "4",
+    "buildCostMultiplier": 4
+  },
+  "thruster": {
+    "health": "55 * 16 * wallHealthMultiplier",
+    "size": "4"
+  },
+  "beryllium-wall": {
+    "health": "130 * wallHealthMultiplier",
+    "armor": 2,
+    "buildCostMultiplier": 8
+  },
+  "beryllium-wall-large": {
+    "health": "130 * wallHealthMultiplier * 4",
+    "armor": 2,
+    "buildCostMultiplier": 5,
+    "size": "2"
+  },
+  "tungsten-wall": {
+    "health": "180 * wallHealthMultiplier",
+    "armor": 14,
+    "buildCostMultiplier": 8
+  },
+  "tungsten-wall-large": {
+    "health": "180 * wallHealthMultiplier * 4",
+    "armor": 14,
+    "buildCostMultiplier": 5,
+    "size": "2"
+  },
+  "blast-door": {
+    "health": "175 * wallHealthMultiplier * 4",
+    "armor": 14,
+    "size": "2"
+  },
+  "reinforced-surge-wall": {
+    "health": "250 * wallHealthMultiplier",
+    "lightningChance": 0.05,
+    "lightningDamage": 30,
+    "armor": 20,
+    "researchCost": null
+  },
+  "reinforced-surge-wall-large": {
+    "health": "250 * wallHealthMultiplier * 4",
+    "lightningChance": 0.05,
+    "lightningDamage": 30,
+    "armor": 20,
+    "size": "2",
+    "researchCost": null
+  },
+  "carbide-wall": {
+    "health": "270 * wallHealthMultiplier",
+    "armor": 16
+  },
+  "carbide-wall-large": {
+    "health": "270 * wallHealthMultiplier * 4",
+    "armor": 16,
+    "size": "2"
+  },
+  "shielded-wall": {
+    "outputsPower": null,
+    "hasPower": true,
+    "consumesPower": true,
+    "conductivePower": true,
+    "chanceDeflect": 8,
+    "health": "260 * wallHealthMultiplier * 4",
+    "armor": 15,
+    "size": "2"
+  },
+  "mender": {
+    "size": "1",
+    "reload": 200,
+    "range": 40,
+    "healPercent": 4,
+    "phaseBoost": 4,
+    "phaseRangeBoost": 20,
+    "health": "80"
+  },
+  "mend-projector": {
+    "size": "2",
+    "reload": 250,
+    "range": 85,
+    "healPercent": 11,
+    "phaseBoost": 15,
+    "scaledHealth": "80"
+  },
+  "overdrive-projector": {
+    "size": "2"
+  },
+  "overdrive-dome": {
+    "size": "3",
+    "range": 200,
+    "speedBoost": 2.5,
+    "useTime": 300,
+    "hasBoost": null
+  },
+  "force-projector": {
+    "size": "3",
+    "phaseRadiusBoost": 80,
+    "radius": 101.7,
+    "shieldHealth": 750,
+    "cooldownNormal": 1.5,
+    "cooldownLiquid": 1.2,
+    "cooldownBrokenBase": 0.35,
+    "itemConsumer": null
+  },
+  "shock-mine": {
+    "hasShadow": null,
+    "health": "50",
+    "damage": "25",
+    "tileDamage": 7,
+    "length": "10",
+    "tendrils": "4"
+  },
+  "radar": {
+    "outlineColor": null,
+    "fogRadius": "34",
+    "researchCost": null
+  },
+  "build-tower": {
+    "outlineColor": null,
+    "range": 200,
+    "size": "3",
+    "buildSpeed": 1.5
+  },
+  "regen-projector": {
+    "size": "3",
+    "range": "28",
+    "baseColor": null,
+    "healPercent": 4,
+    "col": null,
+    "color": null
+  },
+  "barrier-projector": {
+    "size": "3",
+    "width": 50,
+    "length": "36",
+    "shieldHealth": 2000,
+    "cooldownNormal": 3,
+    "cooldownBrokenBase": 0.35
+  },
+  "shockwave-tower": {
+    "size": "3",
+    "range": 170,
+    "reload": 80
+  },
+  "shield-projector": {
+    "size": "3"
+  },
+  "large-shield-projector": {
+    "size": "4",
+    "radius": 400
+  },
+  "conveyor": {
+    "health": "45",
+    "speed": 0.03,
+    "displayedSpeed": 4.2,
+    "buildCostMultiplier": 2,
+    "researchCost": null
+  },
+  "titanium-conveyor": {
+    "health": "65",
+    "speed": 0.08,
+    "displayedSpeed": 11
+  },
+  "plastanium-conveyor": {
+    "health": "90",
+    "speed": 4,
+    "itemCapacity": "10"
+  },
+  "armored-conveyor": {
+    "health": "280",
+    "speed": 0.08,
+    "displayedSpeed": 11
+  },
+  "junction": {
+    "speed": "26",
+    "capacity": "6",
+    "health": "30",
+    "buildCostMultiplier": 6
+  },
+  "bridge-conveyor": {
+    "fadeIn": null,
+    "moveArrows": null,
+    "range": "4",
+    "speed": 74,
+    "arrowSpacing": 6,
+    "bufferCapacity": "14"
+  },
+  "phase-conveyor": {
+    "range": "12",
+    "arrowPeriod": 0.9,
+    "arrowTimeScl": 2.75,
+    "hasPower": true,
+    "pulse": true
+  },
+  "sorter": {
+    "buildCostMultiplier": 3
+  },
+  "inverted-sorter": {
+    "buildCostMultiplier": 3,
+    "invert": true
+  },
+  "router": {
+    "buildCostMultiplier": 4
+  },
+  "distributor": {
+    "buildCostMultiplier": 3,
+    "size": "2"
+  },
+  "overflow-gate": {
+    "buildCostMultiplier": 3
+  },
+  "underflow-gate": {
+    "buildCostMultiplier": 3,
+    "invert": true
+  },
+  "mass-driver": {
+    "size": "3",
+    "itemCapacity": "120",
+    "reload": 200,
+    "range": 440
+  },
+  "duct": {
+    "health": "90",
+    "speed": 4,
+    "researchCost": null
+  },
+  "armored-duct": {
+    "health": "140",
+    "speed": 4,
+    "armored": true,
+    "researchCost": null
+  },
+  "duct-router": {
+    "health": "90",
+    "speed": 4,
+    "regionRotated1": "1",
+    "solid": null,
+    "researchCost": null
+  },
+  "overflow-duct": {
+    "health": "90",
+    "speed": 4,
+    "solid": null,
+    "researchCostMultiplier": 1.5
+  },
+  "underflow-duct": {
+    "health": "90",
+    "speed": 4,
+    "solid": null,
+    "researchCostMultiplier": 1.5,
+    "invert": true
+  },
+  "duct-bridge": {
+    "health": "90",
+    "speed": 4,
+    "buildCostMultiplier": 2,
+    "researchCostMultiplier": 0.3
+  },
+  "duct-unloader": {
+    "health": "120",
+    "speed": 4,
+    "solid": null,
+    "underBullets": true,
+    "regionRotated1": "1"
+  },
+  "surge-conveyor": {
+    "health": "130",
+    "speed": 5,
+    "itemCapacity": "10",
+    "outputRouter": null,
+    "hasPower": true,
+    "consumesPower": true,
+    "conductivePower": true,
+    "underBullets": true,
+    "baseEfficiency": 1,
+    "researchCost": null
+  },
+  "surge-router": {
+    "health": "130",
+    "speed": 6,
+    "hasPower": true,
+    "consumesPower": true,
+    "conductivePower": true,
+    "baseEfficiency": 1,
+    "underBullets": true,
+    "solid": null
+  },
+  "unit-cargo-loader": {
+    "size": "3",
+    "buildTime": 60,
+    "itemCapacity": "200",
+    "researchCost": null
+  },
+  "unit-cargo-unload-point": {
+    "size": "2",
+    "itemCapacity": "100",
+    "researchCost": null
+  },
+  "mechanical-pump": {
+    "pumpAmount": 7
+  },
+  "rotary-pump": {
+    "pumpAmount": 0.2,
+    "liquidCapacity": 30,
+    "hasPower": true,
+    "size": "2"
+  },
+  "impulse-pump": {
+    "pumpAmount": 0.22,
+    "liquidCapacity": 40,
+    "hasPower": true,
+    "size": "3"
+  },
+  "conduit": {
+    "health": "45"
+  },
+  "pulse-conduit": {
+    "liquidCapacity": 16,
+    "liquidPressure": 1.025,
+    "health": "90"
+  },
+  "plated-conduit": {
+    "liquidCapacity": 16,
+    "liquidPressure": 1.025,
+    "health": "220"
+  },
+  "liquid-router": {
+    "liquidCapacity": 20,
+    "underBullets": true,
+    "solid": null
+  },
+  "liquid-container": {
+    "liquidCapacity": 700,
+    "size": "2",
+    "solid": true
+  },
+  "liquid-tank": {
+    "size": "3",
+    "solid": true,
+    "liquidCapacity": 1800,
+    "health": "500"
+  },
+  "liquid-junction": {
+    "solid": null
+  },
+  "bridge-conduit": {
+    "fadeIn": null,
+    "moveArrows": null,
+    "arrowSpacing": 6,
+    "range": "4",
+    "hasPower": null
+  },
+  "phase-conduit": {
+    "range": "12",
+    "arrowPeriod": 0.9,
+    "arrowTimeScl": 2.75,
+    "hasPower": true,
+    "canOverdrive": null,
+    "pulse": true
+  },
+  "reinforced-pump": {
+    "pumpAmount": 80,
+    "liquidCapacity": 160,
+    "size": "2"
+  },
+  "reinforced-conduit": {
+    "botColor": null,
+    "leaks": true,
+    "liquidCapacity": 20,
+    "liquidPressure": 1.03,
+    "health": "250",
+    "researchCostMultiplier": "3",
+    "underBullets": true
+  },
+  "reinforced-liquid-junction": {
+    "buildCostMultiplier": 3,
+    "health": "260",
+    "junctionReplacement": "this",
+    "researchCostMultiplier": "1",
+    "solid": null,
+    "underBullets": true
+  },
+  "reinforced-bridge-conduit": {
+    "range": "4",
+    "hasPower": null,
+    "researchCostMultiplier": "1",
+    "underBullets": true,
+    "rotBridgeReplacement": "this"
+  },
+  "reinforced-liquid-router": {
+    "liquidCapacity": 30,
+    "liquidPadding": 3,
+    "researchCostMultiplier": "3",
+    "underBullets": true,
+    "solid": null
+  },
+  "reinforced-liquid-container": {
+    "liquidCapacity": 1000,
+    "size": "2",
+    "liquidPadding": 6,
+    "researchCostMultiplier": "4",
+    "solid": true
+  },
+  "reinforced-liquid-tank": {
+    "size": "3",
+    "solid": true,
+    "liquidCapacity": 2700,
+    "liquidPadding": 2
+  },
+  "power-node": {
+    "maxNodes": "10",
+    "laserRange": "6"
+  },
+  "power-node-large": {
+    "size": "2",
+    "maxNodes": "15",
+    "laserRange": 15
+  },
+  "surge-tower": {
+    "size": "2",
+    "maxNodes": "2",
+    "laserRange": 40,
+    "schematicPriority": "-15"
+  },
+  "diode": {},
+  "battery": {
+    "baseExplosiveness": 1
+  },
+  "battery-large": {
+    "size": "3",
+    "baseExplosiveness": 5
+  },
+  "combustion-generator": {
+    "powerProduction": 1,
+    "itemDuration": 120,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.03,
+    "generateEffect": null,
+    "drawer": null
+  },
+  "thermal-generator": {
+    "powerProduction": 1.8,
+    "generateEffect": null,
+    "effectChance": 0.011,
+    "size": "2",
+    "floating": true,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.06
+  },
+  "steam-generator": {
+    "powerProduction": 5.5,
+    "itemDuration": 90,
+    "hasLiquids": true,
+    "size": "2",
+    "generateEffect": null,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.06,
+    "rotateSpeed": 2
+  },
+  "differential-generator": {
+    "powerProduction": 18,
+    "itemDuration": 220,
+    "hasLiquids": true,
+    "hasItems": true,
+    "size": "3",
+    "ambientSound": null,
+    "generateEffect": null,
+    "ambientSoundVolume": 0.03,
+    "drawer": null
+  },
+  "rtg-generator": {
+    "size": "2",
+    "powerProduction": 4.5,
+    "itemDuration": 60,
+    "envEnabled": null,
+    "generateEffect": null,
+    "drawer": null
+  },
+  "solar-panel": {
+    "powerProduction": 0.1
+  },
+  "solar-panel-large": {
+    "size": "3",
+    "powerProduction": 1.6
+  },
+  "thorium-reactor": {
+    "ambientSound": null,
+    "ambientSoundVolume": 0.24,
+    "size": "3",
+    "health": "700",
+    "itemDuration": 360,
+    "powerProduction": 15,
+    "heating": 0.02
+  },
+  "impact-reactor": {
+    "size": "4",
+    "health": "900",
+    "powerProduction": 130,
+    "itemDuration": 140,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.07,
+    "liquidCapacity": 60
+  },
+  "beam-node": {
+    "consumesPower": true,
+    "outputsPower": true,
+    "health": "90",
+    "range": "10",
+    "fogRadius": "1",
+    "researchCost": null
+  },
+  "beam-tower": {
+    "size": "3",
+    "consumesPower": true,
+    "outputsPower": true,
+    "range": "23",
+    "scaledHealth": "90",
+    "fogRadius": "2"
+  },
+  "beam-link": {
+    "size": "3",
+    "maxNodes": "1",
+    "laserRange": 1000,
+    "autolink": null,
+    "laserColor2": null,
+    "laserScale": 0.8,
+    "scaledHealth": "130"
+  },
+  "turbine-condenser": {
+    "attribute": null,
+    "group": null,
+    "displayEfficiencyScale": 1,
+    "minEfficiency": 9,
+    "powerProduction": 3,
+    "displayEfficiency": null,
+    "generateEffect": null,
+    "effectChance": 0.04,
+    "size": "3",
+    "ambientSound": null,
+    "ambientSoundVolume": 0.06,
+    "blurThresh": 0.01
+  },
+  "chemical-combustion-chamber": {
+    "powerProduction": 10,
+    "researchCost": null,
+    "size": "3",
+    "sinMag": 3,
+    "sinScl": 5
+  },
+  "pyrolysis-generator": {
+    "powerProduction": 25,
+    "sinMag": 2.75,
+    "sinScl": 5,
+    "sides": "8",
+    "sideOffset": null
+  },
+  "flux-reactor": {
+    "powerProduction": 240,
+    "maxHeat": 150,
+    "liquidCapacity": 30,
+    "explosionMinWarmup": 0.5,
+    "explosionRadius": "17",
+    "explosionDamage": "2500",
+    "ambientSound": null,
+    "ambientSoundVolume": 0.13,
+    "size": "5",
+    "alpha": 0.35,
+    "particleRad": 12,
+    "particleSize": 9,
+    "particleLife": 120,
+    "particles": "27"
+  },
+  "neoplasia-reactor": {
+    "size": "5",
+    "liquidCapacity": 80,
+    "outputLiquid": null,
+    "explodeOnFull": true,
+    "heatOutput": 60,
+    "itemDuration": 60,
+    "itemCapacity": "10",
+    "explosionRadius": "9",
+    "explosionDamage": "2000",
+    "explodeEffect": null,
+    "explodeSound": null,
+    "powerProduction": 140,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.2,
+    "explosionPuddles": "80",
+    "explosionPuddleRange": null,
+    "explosionPuddleLiquid": null,
+    "explosionPuddleAmount": 200,
+    "explosionMinWarmup": 0.5,
+    "consumeEffect": null,
+    "color": null,
+    "strokeMax": 3.25,
+    "radius": 65,
+    "amount": "5",
+    "timeScl": 200
+  },
+  "mechanical-drill": {
+    "tier": "2",
+    "drillTime": "600",
+    "size": "2",
+    "researchCost": null
+  },
+  "pneumatic-drill": {
+    "tier": "3",
+    "drillTime": "400",
+    "size": "2"
+  },
+  "laser-drill": {
+    "drillTime": "280",
+    "size": "3",
+    "hasPower": true,
+    "tier": "4",
+    "updateEffect": null,
+    "drillEffect": null
+  },
+  "blast-drill": {
+    "drillTime": "280",
+    "size": "4",
+    "drawRim": true,
+    "hasPower": true,
+    "tier": "5",
+    "updateEffect": null,
+    "updateEffectChance": 0.03,
+    "drillEffect": null,
+    "rotateSpeed": 6,
+    "warmupSpeed": 0.01,
+    "itemCapacity": "20",
+    "liquidBoostIntensity": 1.8
+  },
+  "water-extractor": {
+    "result": null,
+    "pumpAmount": 0.11,
+    "size": "2",
+    "liquidCapacity": 30,
+    "rotateSpeed": 1.4,
+    "attribute": null
+  },
+  "cultivator": {
+    "outputItem": null,
+    "craftTime": "100",
+    "size": "2",
+    "hasLiquids": true,
+    "hasPower": true,
+    "hasItems": true,
+    "craftEffect": null,
+    "attribute": null,
+    "legacyReadWarmup": true,
+    "maxBoost": 2
+  },
+  "oil-extractor": {
+    "result": null,
+    "updateEffect": null,
+    "updateEffectChance": 0.05,
+    "pumpAmount": 0.25,
+    "size": "3",
+    "liquidCapacity": 30,
+    "attribute": null,
+    "baseEfficiency": 0,
+    "itemUseTime": 60
+  },
+  "vent-condenser": {
+    "attribute": null,
+    "group": null,
+    "minEfficiency": 9,
+    "baseEfficiency": 0,
+    "displayEfficiency": null,
+    "craftEffect": null,
+    "drawer": null,
+    "craftTime": 120,
+    "size": "3",
+    "ambientSound": null,
+    "ambientSoundVolume": 0.06,
+    "hasLiquids": true,
+    "boostScale": 1,
+    "itemCapacity": "0",
+    "outputLiquid": null,
+    "liquidCapacity": 60
+  },
+  "cliff-crusher": {
+    "drillTime": 110,
+    "size": "2",
+    "attribute": null,
+    "output": null,
+    "fogRadius": "2",
+    "researchCost": null,
+    "ambientSound": null,
+    "ambientSoundVolume": 0.04
+  },
+  "large-cliff-crusher": {
+    "drillTime": 48,
+    "size": "3",
+    "attribute": null,
+    "output": null,
+    "fogRadius": "3",
+    "ambientSound": null,
+    "ambientSoundVolume": 0.08,
+    "itemConsumer": null,
+    "itemCapacity": "20",
+    "boostItemUseTime": 60
+  },
+  "plasma-bore": {
+    "drillTime": 160,
+    "tier": "3",
+    "size": "2",
+    "range": "5",
+    "fogRadius": "3",
+    "researchCost": null
+  },
+  "large-plasma-bore": {
+    "drillTime": 100,
+    "tier": "5",
+    "size": "3",
+    "range": "6",
+    "fogRadius": "4",
+    "laserWidth": 0.7,
+    "itemCapacity": "20",
+    "researchCost": null
+  },
+  "impact-drill": {
+    "drillTime": 60,
+    "size": "4",
+    "hasPower": true,
+    "tier": "6",
+    "drillEffect": null,
+    "shake": 4,
+    "itemCapacity": "40",
+    "blockedItem": null,
+    "researchCostMultiplier": 0.5,
+    "fogRadius": "4"
+  },
+  "eruption-drill": {
+    "drillTime": 60,
+    "size": "5",
+    "hasPower": true,
+    "tier": "7",
+    "shake": 4,
+    "itemCapacity": "50",
+    "arrowOffset": 2,
+    "arrowSpacing": 5,
+    "arrows": "2",
+    "a": 0.6,
+    "fogRadius": "5"
+  },
+  "core-shard": {
+    "alwaysUnlocked": true,
+    "isFirstTier": true,
+    "unitType": null,
+    "health": "1100",
+    "itemCapacity": "4000",
+    "size": "3",
+    "buildCostMultiplier": 2,
+    "unitCapModifier": "8"
+  },
+  "core-foundation": {
+    "unitType": null,
+    "health": "3500",
+    "itemCapacity": "9000",
+    "size": "4",
+    "thrusterLength": 34,
+    "unitCapModifier": "16",
+    "researchCostMultiplier": 0.07
+  },
+  "core-nucleus": {
+    "unitType": null,
+    "health": "6000",
+    "itemCapacity": "13000",
+    "size": "5",
+    "thrusterLength": 40,
+    "unitCapModifier": "24",
+    "researchCostMultiplier": 0.11
+  },
+  "core-bastion": {
+    "isFirstTier": true,
+    "unitType": null,
+    "health": "4500",
+    "itemCapacity": "2000",
+    "size": "4",
+    "thrusterLength": 34,
+    "armor": 5,
+    "alwaysUnlocked": true,
+    "incinerateNonBuildable": true,
+    "requiresCoreZone": true,
+    "buildCostMultiplier": 0.7,
+    "unitCapModifier": "15",
+    "researchCostMultiplier": 0.07
+  },
+  "core-citadel": {
+    "unitType": null,
+    "health": "16000",
+    "itemCapacity": "3000",
+    "size": "5",
+    "thrusterLength": 40,
+    "armor": 10,
+    "incinerateNonBuildable": true,
+    "buildCostMultiplier": 0.7,
+    "requiresCoreZone": true,
+    "unitCapModifier": "15",
+    "researchCostMultiplier": 0.17
+  },
+  "core-acropolis": {
+    "unitType": null,
+    "health": "30000",
+    "itemCapacity": "4000",
+    "size": "6",
+    "thrusterLength": 48,
+    "armor": 15,
+    "incinerateNonBuildable": true,
+    "buildCostMultiplier": 0.7,
+    "requiresCoreZone": true,
+    "unitCapModifier": "15",
+    "researchCostMultiplier": 0.1
+  },
+  "container": {
+    "size": "2",
+    "itemCapacity": "300",
+    "scaledHealth": "55"
+  },
+  "vault": {
+    "size": "3",
+    "itemCapacity": "1000",
+    "scaledHealth": "55"
+  },
+  "unloader": {
+    "speed": 60,
+    "group": null
+  },
+  "reinforced-container": {
+    "size": "2",
+    "itemCapacity": "160",
+    "scaledHealth": "120",
+    "coreMerge": null
+  },
+  "reinforced-vault": {
+    "size": "3",
+    "itemCapacity": "900",
+    "scaledHealth": "120",
+    "coreMerge": null
+  },
+  "duo": {
+    "width": 7,
+    "height": 9,
+    "lifetime": 60,
+    "ammoMultiplier": "2"
+  },
+  "scatter": {
+    "lifetime": 60,
+    "ammoMultiplier": 5,
+    "shootEffect": null,
+    "reloadMultiplier": 0.5,
+    "width": 6,
+    "height": 8,
+    "hitEffect": null,
+    "splashDamage": 22,
+    "splashDamageRadius": 24
+  },
+  "scorch": {
+    "ammoMultiplier": 3,
+    "hitSize": 7,
+    "lifetime": 18,
+    "pierce": true,
+    "collidesAir": null,
+    "statusDuration": 60,
+    "shootEffect": null,
+    "hitEffect": null,
+    "despawnEffect": null,
+    "status": null,
+    "keepVelocity": null,
+    "hittable": null
+  },
+  "hail": {
+    "knockback": 0.8,
+    "lifetime": 80,
+    "width": 11,
+    "height": 11,
+    "collidesTiles": null,
+    "splashDamageRadius": 25,
+    "splashDamage": 33
+  },
+  "wave": {
+    "knockback": 0.7,
+    "drag": 0.01,
+    "layer": null
+  },
+  "lancer": {
+    "range": 165,
+    "firstShotDelay": 40,
+    "recoil": 2,
+    "reload": 80,
+    "shake": 2,
+    "shootEffect": null,
+    "smokeEffect": null,
+    "heatColor": null,
+    "size": "2",
+    "scaledHealth": "280",
+    "targetAir": null,
+    "moveWhileCharging": null,
+    "accurateDelay": null,
+    "shootSound": null,
+    "coolant": null,
+    "colors": null,
+    "chargeEffect": null,
+    "buildingDamageMultiplier": 0.25,
+    "hitEffect": null,
+    "hitSize": "4",
+    "lifetime": 16,
+    "drawSize": 400,
+    "collidesAir": null,
+    "length": 173,
+    "ammoMultiplier": 1,
+    "pierceCap": "4"
+  },
+  "arc": {
+    "damage": "20",
+    "lightningLength": "25",
+    "collidesAir": null,
+    "ammoMultiplier": 1,
+    "buildingDamageMultiplier": 0.25,
+    "lifetime": null,
+    "hitEffect": null,
+    "despawnEffect": null,
+    "status": null,
+    "statusDuration": 10,
+    "hittable": null,
+    "lightColor": null
+  },
+  "parallax": {
+    "hasPower": true,
+    "size": "2",
+    "force": 12,
+    "scaledForce": 6,
+    "range": 240,
+    "damage": 0.3,
+    "scaledHealth": "160",
+    "rotateSpeed": "10"
+  },
+  "swarmer": {
+    "width": 8,
+    "height": 8,
+    "shrinkY": 0,
+    "splashDamageRadius": 30,
+    "splashDamage": 30,
+    "ammoMultiplier": 5,
+    "hitEffect": null,
+    "despawnEffect": null,
+    "status": null,
+    "statusDuration": 60
+  },
+  "salvo": {
+    "width": 7,
+    "height": 9,
+    "lifetime": 60,
+    "ammoMultiplier": "2"
+  },
+  "segment": {
+    "scaledHealth": "250",
+    "range": 180,
+    "hasPower": true,
+    "size": "2",
+    "shootLength": 5,
+    "bulletDamage": 30,
+    "reload": 8
+  },
+  "tsunami": {
+    "lifetime": 49,
+    "speed": 4,
+    "knockback": 1.7,
+    "puddleSize": 8,
+    "orbSize": 4,
+    "drag": 0.001,
+    "ammoMultiplier": 0.4,
+    "statusDuration": 60,
+    "damage": 0.2,
+    "layer": null
+  },
+  "fuse": {
+    "reload": 35,
+    "shake": 4,
+    "range": 90,
+    "recoil": 5,
+    "shoot": null,
+    "shootCone": "30",
+    "size": "3",
+    "scaledHealth": "220",
+    "shootSound": null,
+    "coolant": null,
+    "brange": null,
+    "length": "brange",
+    "damage": 66,
+    "ammoMultiplier": 4,
+    "width": 17,
+    "reloadMultiplier": 1.3
+  },
+  "ripple": {
+    "knockback": 0.8,
+    "lifetime": 80,
+    "width": 11,
+    "height": 11,
+    "collidesTiles": null,
+    "splashDamageRadius": 25,
+    "splashDamage": 33
+  },
+  "cyclone": {
+    "ammoMultiplier": 2,
+    "shootEffect": null,
+    "reloadMultiplier": 0.8,
+    "width": 5,
+    "height": 12,
+    "hitEffect": null,
+    "splashDamage": 45,
+    "splashDamageRadius": 25,
+    "shrinkY": 1,
+    "lifetime": 20,
+    "backColor": null,
+    "frontColor": null,
+    "despawnEffect": null
+  },
+  "foreshadow": {
+    "brange": 500,
+    "range": 500,
+    "shootEffect": null,
+    "hitEffect": null,
+    "pierceEffect": null,
+    "smokeEffect": null,
+    "pointEffect": null,
+    "despawnEffect": null,
+    "pointEffectSpace": 20,
+    "damage": "1350",
+    "buildingDamageMultiplier": 0.2,
+    "maxDamageFraction": 0.6,
+    "pierceDamageFactor": 1,
+    "length": "brange",
+    "hitShake": 6,
+    "ammoMultiplier": 1
+  },
+  "spectre": {
+    "hitSize": 4.8,
+    "width": 15,
+    "height": 21,
+    "shootEffect": null,
+    "ammoMultiplier": "4",
+    "reloadMultiplier": 1.7,
+    "knockback": 0.3
+  },
+  "meltdown": {
+    "shootEffect": null,
+    "shootCone": 40,
+    "recoil": 4,
+    "size": "4",
+    "shake": 2,
+    "range": 195,
+    "reload": 90,
+    "firingMoveFract": 0.5,
+    "shootDuration": 230,
+    "shootSound": null,
+    "loopSound": null,
+    "loopSoundVolume": 2,
+    "length": 200,
+    "hitEffect": null,
+    "hitColor": null,
+    "status": null,
+    "drawSize": 420,
+    "timescaleDamage": true,
+    "incendChance": 0.4,
+    "incendSpread": 5,
+    "incendAmount": "1",
+    "ammoMultiplier": 1
+  },
+  "breach": {
+    "sfe": null,
+    "width": 12,
+    "hitSize": 7,
+    "height": 20,
+    "shootEffect": null,
+    "smokeEffect": null,
+    "ammoMultiplier": "1",
+    "pierceCap": "2",
+    "pierce": true,
+    "pierceBuilding": true,
+    "hitColor": null,
+    "backColor": null,
+    "trailColor": null,
+    "frontColor": null,
+    "trailWidth": 2.1,
+    "trailLength": "10",
+    "hitEffect": null,
+    "despawnEffect": null,
+    "buildingDamageMultiplier": 0.3
+  },
+  "diffuse": {
+    "knockback": 4,
+    "width": 25,
+    "hitSize": 7,
+    "height": 20,
+    "shootEffect": null,
+    "smokeEffect": null,
+    "ammoMultiplier": "1",
+    "hitColor": null,
+    "backColor": null,
+    "trailColor": null,
+    "frontColor": null,
+    "trailWidth": 6,
+    "trailLength": "3",
+    "hitEffect": null,
+    "despawnEffect": null,
+    "buildingDamageMultiplier": 0.2
+  },
+  "reinforced-": {
+    "progress": "circleProgress",
+    "color": "circleColor",
+    "circle": true,
+    "hollow": true,
+    "stroke": 0,
+    "strokeTo": "circleStroke",
+    "radius": "circleRad",
+    "layer": null,
+    "y": "circleY"
+  },
+  "sublimate": {},
+  "titan": {
+    "hitEffect": null,
+    "despawnEffect": null,
+    "knockback": 2,
+    "lifetime": 140,
+    "height": 19,
+    "width": 17,
+    "splashDamageRadius": 65,
+    "splashDamage": 350,
+    "scaledSplashDamage": true,
+    "backColor": null,
+    "hitColor": null,
+    "trailColor": null,
+    "frontColor": null,
+    "ammoMultiplier": 1,
+    "hitSound": null,
+    "status": null,
+    "trailLength": "32",
+    "trailWidth": 3.35,
+    "trailSinScl": 2.5,
+    "trailSinMag": 0.5,
+    "trailEffect": null,
+    "despawnShake": 7,
+    "shootEffect": null,
+    "smokeEffect": null,
+    "trailInterp": null,
+    "shrinkX": 0.2,
+    "shrinkY": 0.1,
+    "buildingDamageMultiplier": 0.3
+  },
+  "disperse": {
+    "damage": "65",
+    "speed": 8.5,
+    "width": "16",
+    "height": "16",
+    "shrinkY": 0.3,
+    "backSprite": "\"large-bomb-back\"",
+    "sprite": "\"mine-bullet\"",
+    "velocityRnd": 0.11,
+    "collidesGround": null,
+    "collidesTiles": null,
+    "shootEffect": null,
+    "smokeEffect": null,
+    "frontColor": null,
+    "backColor": null,
+    "trailColor": null,
+    "hitColor": null,
+    "trailChance": 0.44,
+    "ammoMultiplier": 3,
+    "lifetime": 34,
+    "rotationOffset": 90,
+    "trailRotation": true,
+    "trailEffect": null,
+    "hitEffect": null,
+    "despawnEffect": null
+  },
+  "afflict": {
+    "colorTo": null,
+    "sizeTo": 26,
+    "lifetime": 14,
+    "strokeFrom": 4
+  },
+  "lustre": {
+    "damage": 210,
+    "buildingDamageMultiplier": 0.3,
+    "hitColor": null
+  },
+  "scathe": {
+    "predictTarget": null,
+    "shootEffect": null,
+    "smokeEffect": null,
+    "hitColor": null,
+    "ammoMultiplier": 1
+  },
+  "scathe-missile": {
+    "speed": 4.6,
+    "maxRange": 6,
+    "lifetime": 10,
+    "outlineColor": null,
+    "engineColor": null,
+    "trailColor": null,
+    "engineLayer": null,
+    "engineSize": 3.1,
+    "engineOffset": 10,
+    "rotateSpeed": 0.25,
+    "trailLength": "18",
+    "missileAccelTime": 50,
+    "lowAltitude": true,
+    "loopSound": null,
+    "loopSoundVolume": 0.6,
+    "deathSound": null,
+    "targetAir": null,
+    "targetUnderBlocks": null,
+    "fogRadius": 6,
+    "health": "210",
+    "shootCone": 360,
+    "mirror": null,
+    "reload": 1,
+    "deathExplosionEffect": null,
+    "shootOnDeath": true,
+    "shake": 10,
+    "hitColor": null,
+    "strokeFrom": 4,
+    "sizeTo": 130
+  },
+  "scathe-missile-phase": {
+    "speed": 4,
+    "maxRange": 6,
+    "lifetime": 60,
+    "outlineColor": null,
+    "engineColor": null,
+    "trailColor": null,
+    "engineLayer": null,
+    "engineSize": 3.1,
+    "engineOffset": 10,
+    "rotateSpeed": 3,
+    "trailLength": "18",
+    "missileAccelTime": 50,
+    "lowAltitude": true,
+    "loopSound": null,
+    "loopSoundVolume": 0.6,
+    "deathSound": null,
+    "targetAir": null,
+    "targetUnderBlocks": null,
+    "progress": null,
+    "color": null,
+    "sides": "6",
+    "radius": 3,
+    "hollow": true,
+    "layer": null,
+    "y": 1.8
+  },
+  "scathe-missile-surge": {
+    "speed": 4.4,
+    "maxRange": 6,
+    "lifetime": 60,
+    "outlineColor": null,
+    "engineColor": null,
+    "trailColor": null,
+    "engineLayer": null,
+    "engineSize": 3.1,
+    "engineOffset": 10,
+    "rotateSpeed": 0,
+    "trailLength": "18",
+    "missileAccelTime": 30,
+    "lowAltitude": true,
+    "loopSound": null,
+    "loopSoundVolume": 0.6,
+    "deathSound": null,
+    "targetAir": null,
+    "targetUnderBlocks": null,
+    "fogRadius": 6,
+    "health": "400",
+    "shootCone": 360,
+    "rotate": true,
+    "rotationLimit": 0,
+    "reload": 1,
+    "deathExplosionEffect": null,
+    "shootOnDeath": true,
+    "shake": 10,
+    "hitColor": "engineColor",
+    "shootEffect": null,
+    "collidesAir": null,
+    "buildingDamageMultiplier": 0.1,
+    "ammoMultiplier": 1,
+    "fragLifeMin": 0.1,
+    "fragBullets": "5",
+    "fragRandomSpread": 0,
+    "fragSpread": 30,
+    "smokeEffect": null
+  },
+  "scathe-missile-surge-split": {
+    "speed": 4.8,
+    "maxRange": 6,
+    "lifetime": 10,
+    "outlineColor": null,
+    "engineColor": null,
+    "trailColor": null,
+    "engineLayer": null,
+    "engineSize": 2.2,
+    "engineOffset": 8,
+    "rotateSpeed": 1.4,
+    "trailLength": "12",
+    "lowAltitude": true,
+    "loopSound": null,
+    "loopSoundVolume": 0.6,
+    "deathSound": null,
+    "targetAir": null,
+    "targetUnderBlocks": null,
+    "fogRadius": 6,
+    "health": "100",
+    "shootCone": 360,
+    "mirror": null,
+    "reload": 1,
+    "deathExplosionEffect": null,
+    "shootOnDeath": true,
+    "shake": 10,
+    "lightning": "6",
+    "lightningDamage": 35,
+    "lightningLength": "8",
+    "hitColor": "engineColor",
+    "strokeFrom": 4,
+    "sizeTo": 100
+  },
+  "smite": {
+    "sprite": "\"large-orb\"",
+    "width": 17,
+    "height": 21,
+    "hitSize": 8,
+    "colorFrom": null,
+    "colorTo": null,
+    "lifetime": 12,
+    "sizeTo": 20,
+    "strokeFrom": 3,
+    "strokeTo": 0.3
+  },
+  "malign": {
+    "haloProgress": null,
+    "haloColor": null,
+    "haloY": -15,
+    "circleProgress": null,
+    "circleColor": "haloColor",
+    "circleY": 25,
+    "shootSound": null,
+    "loopSound": null,
+    "loopSoundVolume": 1.3,
+    "sprite": "\"missile-large\"",
+    "lifetime": 22,
+    "width": 19,
+    "height": 22,
+    "hitSize": 7,
+    "shootEffect": null,
+    "smokeEffect": null,
+    "ammoMultiplier": "1",
+    "hitColor": "circleColor",
+    "backColor": "circleColor",
+    "trailColor": "circleColor",
+    "lightningColor": "circleColor",
+    "frontColor": null,
+    "trailWidth": 3,
+    "trailLength": "12",
+    "hitEffect": null,
+    "despawnEffect": null,
+    "buildingDamageMultiplier": 0.25,
+    "trailEffect": null,
+    "trailRotation": true,
+    "trailInterval": 3,
+    "lightning": "1",
+    "lightningCone": 15,
+    "lightningLength": "20",
+    "lightningLengthRand": "30",
+    "lightningDamage": 20,
+    "homingPower": 0.17,
+    "homingDelay": 19,
+    "homingRange": 160,
+    "explodeRange": 160,
+    "explodeDelay": 0,
+    "flakInterval": 20,
+    "despawnShake": 3,
+    "colors": null,
+    "sideAngle": 175,
+    "sideWidth": 1,
+    "sideLength": 40,
+    "drawSize": 400,
+    "length": 180,
+    "pierceCap": "2"
+  },
+  "ground-factory": {
+    "size": "3"
+  },
+  "air-factory": {
+    "size": "3"
+  },
+  "naval-factory": {
+    "size": "3",
+    "floating": true
+  },
+  "additive-reconstructor": {
+    "size": "3",
+    "constructTime": 60
+  },
+  "multiplicative-reconstructor": {
+    "size": "5",
+    "constructTime": 60
+  },
+  "exponential-reconstructor": {
+    "size": "7",
+    "constructTime": 60,
+    "liquidCapacity": 60
+  },
+  "tetrative-reconstructor": {
+    "size": "9",
+    "constructTime": 60,
+    "liquidCapacity": 180
+  },
+  "repair-point": {
+    "repairSpeed": 0.45,
+    "repairRadius": 60,
+    "beamWidth": 0.73,
+    "powerUse": 1,
+    "pulseRadius": 5
+  },
+  "repair-turret": {
+    "size": "2",
+    "length": 6,
+    "repairSpeed": 3,
+    "repairRadius": 145,
+    "powerUse": 5,
+    "beamWidth": 1.1,
+    "pulseRadius": 6.1,
+    "coolantUse": 0.16,
+    "coolantMultiplier": 1.6,
+    "acceptCoolant": true
+  },
+  "tank-fabricator": {
+    "size": "3",
+    "configurable": null,
+    "researchCost": null,
+    "regionSuffix": "\"-dark\"",
+    "fogRadius": "3"
+  },
+  "ship-fabricator": {
+    "size": "3",
+    "configurable": null,
+    "regionSuffix": "\"-dark\"",
+    "fogRadius": "3",
+    "researchCostMultiplier": 0.5
+  },
+  "mech-fabricator": {
+    "size": "3",
+    "configurable": null,
+    "regionSuffix": "\"-dark\"",
+    "fogRadius": "3",
+    "researchCostMultiplier": 0.65
+  },
+  "tank-refabricator": {
+    "regionSuffix": "\"-dark\"",
+    "size": "3",
+    "constructTime": 60,
+    "researchCostMultiplier": 0.75
+  },
+  "ship-refabricator": {
+    "regionSuffix": "\"-dark\"",
+    "size": "3",
+    "constructTime": 60,
+    "researchCost": null
+  },
+  "mech-refabricator": {
+    "regionSuffix": "\"-dark\"",
+    "size": "3",
+    "constructTime": 60,
+    "researchCostMultiplier": 0.75
+  },
+  "prime-refabricator": {
+    "regionSuffix": "\"-dark\"",
+    "size": "5",
+    "constructTime": 60
+  },
+  "tank-assembler": {
+    "regionSuffix": "\"-dark\"",
+    "size": "5",
+    "areaSize": "13",
+    "researchCostMultiplier": 0.4
+  },
+  "ship-assembler": {
+    "regionSuffix": "\"-dark\"",
+    "size": "5",
+    "areaSize": "13"
+  },
+  "mech-assembler": {
+    "regionSuffix": "\"-dark\"",
+    "size": "5",
+    "areaSize": "13"
+  },
+  "basic-assembler-module": {
+    "regionSuffix": "\"-dark\"",
+    "researchCostMultiplier": 0.75,
+    "size": "5"
+  },
+  "unit-repair-tower": {
+    "size": "2",
+    "range": 100,
+    "healAmount": 1.5
+  },
+  "payload-conveyor": {
+    "canOverdrive": null
+  },
+  "payload-router": {
+    "canOverdrive": null
+  },
+  "reinforced-payload-conveyor": {
+    "moveTime": 35,
+    "canOverdrive": null,
+    "health": "800",
+    "researchCostMultiplier": 4,
+    "underBullets": true
+  },
+  "reinforced-payload-router": {
+    "moveTime": 35,
+    "health": "800",
+    "canOverdrive": null,
+    "researchCostMultiplier": 4,
+    "underBullets": true
+  },
+  "payload-mass-driver": {
+    "regionSuffix": "\"-dark\"",
+    "size": "3",
+    "reload": 130,
+    "chargeTime": 90,
+    "range": 700,
+    "maxPayloadSize": 2.5,
+    "fogRadius": "5"
+  },
+  "large-payload-mass-driver": {
+    "regionSuffix": "\"-dark\"",
+    "size": "5",
+    "reload": 130,
+    "chargeTime": 100,
+    "range": 1100,
+    "maxPayloadSize": 3.5
+  },
+  "small-deconstructor": {
+    "regionSuffix": "\"-dark\"",
+    "itemCapacity": "100",
+    "size": "3",
+    "deconstructSpeed": 1
+  },
+  "deconstructor": {
+    "regionSuffix": "\"-dark\"",
+    "itemCapacity": "250",
+    "size": "5",
+    "deconstructSpeed": 2
+  },
+  "constructor": {
+    "regionSuffix": "\"-dark\"",
+    "hasPower": true,
+    "buildSpeed": 0.6,
+    "size": "3",
+    "filter": null
+  },
+  "large-constructor": {
+    "regionSuffix": "\"-dark\"",
+    "hasPower": true,
+    "buildSpeed": 0.75,
+    "maxBlockSize": "4",
+    "minBlockSize": "3",
+    "size": "5"
+  },
+  "payload-loader": {
+    "regionSuffix": "\"-dark\"",
+    "hasPower": true,
+    "size": "3",
+    "fogRadius": "5"
+  },
+  "payload-unloader": {
+    "regionSuffix": "\"-dark\"",
+    "hasPower": true,
+    "size": "3",
+    "fogRadius": "5"
+  },
+  "power-source": {
+    "powerProduction": 1000000,
+    "alwaysUnlocked": true
+  },
+  "power-void": {
+    "alwaysUnlocked": true
+  },
+  "item-source": {
+    "alwaysUnlocked": true
+  },
+  "item-void": {
+    "alwaysUnlocked": true
+  },
+  "liquid-source": {
+    "alwaysUnlocked": true
+  },
+  "liquid-void": {
+    "alwaysUnlocked": true
+  },
+  "payload-source": {
+    "size": "5",
+    "alwaysUnlocked": true
+  },
+  "payload-void": {
+    "size": "5",
+    "alwaysUnlocked": true
+  },
+  "heat-source": {
+    "drawer": null,
+    "rotateDraw": null,
+    "size": "1",
+    "heatOutput": 1000,
+    "warmupRate": 1000,
+    "regionRotated1": "1",
+    "itemCapacity": "0",
+    "alwaysUnlocked": true,
+    "ambientSound": null,
+    "allDatabaseTabs": true
+  },
+  "illuminator": {
+    "brightness": 0.75,
+    "radius": 140
+  },
+  "launch-pad": {
+    "size": "3",
+    "itemCapacity": "100",
+    "launchTime": 60,
+    "hasPower": true
+  },
+  "interplanetary-accelerator": {
+    "researchCostMultiplier": 0.1,
+    "size": "7",
+    "hasPower": true,
+    "buildCostMultiplier": 0.5,
+    "scaledHealth": "80"
+  },
+  "message": {},
+  "switch": {},
+  "micro-processor": {
+    "instructionsPerTick": "2",
+    "size": "1"
+  },
+  "logic-processor": {
+    "instructionsPerTick": "8",
+    "range": "8 * 22",
+    "size": "2"
+  },
+  "hyper-processor": {
+    "hasLiquids": true,
+    "instructionsPerTick": "25",
+    "range": "8 * 42",
+    "size": "3"
+  },
+  "memory-cell": {
+    "memoryCapacity": "64"
+  },
+  "memory-bank": {
+    "memoryCapacity": "512",
+    "size": "2"
+  },
+  "logic-display": {
+    "displaySize": "80",
+    "size": "3"
+  },
+  "large-logic-display": {
+    "displaySize": "176",
+    "size": "6"
+  },
+  "canvas": {
+    "canvasSize": "12",
+    "padding": 7,
+    "size": "2"
+  },
+  "reinforced-message": {
+    "health": "100"
+  },
+  "world-processor": {
+    "canOverdrive": null,
+    "targetable": null,
+    "instructionsPerTick": "8",
+    "forceDark": true,
+    "privileged": true,
+    "size": "1",
+    "maxInstructionsPerTick": "1000",
+    "range": null
+  },
+  "world-cell": {
+    "targetable": null,
+    "privileged": true,
+    "memoryCapacity": "512",
+    "forceDark": true
+  },
+  "world-message": {
+    "targetable": null,
+    "privileged": true
+  },
+  "world-switch": {
+    "targetable": null,
+    "privileged": true
+  }
+}
