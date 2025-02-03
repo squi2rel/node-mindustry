@@ -4,30 +4,29 @@
 # How to use
 ## join game
 ```javascript
-  var {NetClient}=require("mindustry");
-  var c=new NetClient();
-  c.on("connect",()=>{
-    c.join("username","AAAAAAAAAAA=","AAAAAAAAAAA=");//name,uuid,usid
-    c.connectConfirm();
-    c.sendChatMessage("Hello, world!")
-  });
-  c.on("SendMessageCallPacket2",p=>{
-    console.log(p.message)
-  })
-  c.connect(3000,"130.61.78.82")//port,ip
+const { Mindustry } = require('./node-mindustry/mindustry.js');
+let c = new Mindustry();
+c.netClient.on("connect",() => {
+	c.netClient.join("username", "UUIDAAAAAAA=", "USIDAAAAAAA=");
+	c.netClient.connectConfirm();
+});
+c.netClient.on("SendMessageCallPacket2", p => {
+	console.log(p.message)
+})
+c.netClient.connect(6567, "127.0.0.1")
 ```
 
 ## join game and get map png
 ```javascript
-  var {Mindustry}=require("mindustry");
-  var c=new Mindustry();
+  let { Mindustry }=require("mindustry");
+  let c = new Mindustry();
   c.netClient.on("connect",()=>{
-    c.netClient.join("username","AAAAAAAAAAA=","AAAAAAAAAAA=");
-    c.events.on("WorldLoadEvent",()=>{
-      require("fs").writeFileSync("./map.png",c.world.toPNG())
+    c.netClient.join("username", "AAAAAAAAAAA=", "AAAAAAAAAAA=");
+    c.events.on("WorldLoadEvent",() => {
+      require("fs").writeFileSync("./map.png", c.world.toPNG())
     })
   });
-  c.netClient.on("SendMessageCallPacket2",p=>{
+  c.netClient.on("SendMessageCallPacket2", p => {
     console.log(p.message)
   })
   c.netClient.connect(3000,"130.61.78.82")
