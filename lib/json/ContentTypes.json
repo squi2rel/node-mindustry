@@ -1,0 +1,22 @@
+{
+    "contentTypes": [
+        "item",
+        "block",
+        "mech_UNUSED",
+        "bullet",
+        "liquid",
+        "status",
+        "unit",
+        "weather",
+        "effect_UNUSED",
+        "sector",
+        "loadout_UNUSED",
+        "typeid_UNUSED",
+        "error",
+        "planet",
+        "ammo_UNUSED",
+        "team",
+        "unitCommand",
+        "unitStance"
+    ]
+}
