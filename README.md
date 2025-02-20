@@ -6,12 +6,13 @@
 ```javascript
 const { Mindustry } = require('./node-mindustry/mindustry.js');
 let c = new Mindustry();
+c.createClient();
 c.netClient.on("connect",() => {
-	c.netClient.join("username", "UUIDAAAAAAA=", "USIDAAAAAAA=");
-	c.netClient.connectConfirm();
+  c.netClient.join("username", "UUIDAAAAAAA=", "USIDAAAAAAA=");
+  c.netClient.connectConfirm();
 });
 c.netClient.on("SendMessageCallPacket2", p => {
-	console.log(p.message)
+  console.log(p.message)
 })
 c.netClient.connect(6567, "127.0.0.1")
 ```
@@ -20,6 +21,7 @@ c.netClient.connect(6567, "127.0.0.1")
 ```javascript
   let { Mindustry }=require("mindustry");
   let c = new Mindustry();
+  c.createClient();
   c.netClient.on("connect",()=>{
     c.netClient.join("username", "AAAAAAAAAAA=", "AAAAAAAAAAA=");
     c.events.on("WorldLoadEvent",() => {
