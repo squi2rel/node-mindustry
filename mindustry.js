@@ -1,6 +1,7 @@
 const { EventEmitter } = require("events");
 const Packets = require("./lib/Packets");
 const NetClient = require("./lib/NetClient");
+const NetServer = require("./lib/NetServer");
 const DataStream = require("./lib/DataStream");
 const Call = require("./lib/Call");
 const World = require("./lib/World");
@@ -69,11 +70,16 @@ class Mindustry {
     call;
     utils;
     constructor() {
-        this.netClient = new NetClient(this);
         this.world = new World();
         this.events = new Events();
         this.call = new Call(this);
         this.utils = Utils
+    }
+    createClient(){
+        this.netClient = new NetClient(this);
+    }
+    createServer(){
+        this.netServer = new NetServer(this)
     }
 }
 
